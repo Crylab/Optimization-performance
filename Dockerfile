@@ -9,7 +9,7 @@ RUN pip3 install -r requirements.txt
 
 
 # Copy the Python script into the container
-COPY your_script.py .
+COPY benchmark_fake.py .
 
 # Set the command to run when the container starts
-CMD ["python", "your_script.py"]
+CMD ["python", "benchmark_fake.py"]
