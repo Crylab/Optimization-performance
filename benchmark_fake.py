@@ -1,4 +1,4 @@
-file_list = ["ParamPath.txt", "Slope.txt", "Rosenbrock function with hyper-optimizationarg_list.txt", "Rosenbrock function with hyper-optimizationlabel_list.txt", "Rosenbrock function with hyper-optimizationvalue_list.txt", "Rosenbrock function without hyper-optimizationarg_list.txt", "Rosenbrock function without hyper-optimizationlabel_list.txt", "Rosenbrock function without hyper-optimizationvalue_list.txt"]
+file_list = ["ParamPath.txt", "Slope.txt", "Slope_robust.txt", "Rosenbrock function with hyper-optimizationarg_list.txt", "Rosenbrock function with hyper-optimizationlabel_list.txt", "Rosenbrock function with hyper-optimizationvalue_list.txt", "Rosenbrock function without hyper-optimizationarg_list.txt", "Rosenbrock function without hyper-optimizationlabel_list.txt", "Rosenbrock function without hyper-optimizationvalue_list.txt"]
 
 if __name__ == "__main__":
     print("Hello World!")
