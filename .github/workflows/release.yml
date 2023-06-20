@@ -24,7 +24,7 @@ jobs:
       - name: Run python
         run: python3 benchmark_fake.py
       - name: Zip the files
-        run: zip target.zip Slope.txt ParamPath.txt Rosenbrock function with hyper-optimizationarg_list.txt Rosenbrock function with hyper-optimizationlabel_list.txt Rosenbrock function with hyper-optimizationvalue_list.txt Rosenbrock function without hyper-optimizationarg_list.txt Rosenbrock function without hyper-optimizationlabel_list.txt Rosenbrock function without hyper-optimizationvalue_list.txt
+        run: zip target.zip Slope.txt Slope_robust.txt ParamPath.txt Rosenbrock function with hyper-optimizationarg_list.txt Rosenbrock function with hyper-optimizationlabel_list.txt Rosenbrock function with hyper-optimizationvalue_list.txt Rosenbrock function without hyper-optimizationarg_list.txt Rosenbrock function without hyper-optimizationlabel_list.txt Rosenbrock function without hyper-optimizationvalue_list.txt
       
       - name: Create Release
         id: create_release
