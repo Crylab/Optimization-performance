@@ -16,15 +16,24 @@ python benchmark.py
 ```
 3. Fetch the results:
 At the end of the experiment, the set of .txt files is generated.
-- *Rosenbrock function with hyper-optimizationarg_list.txt* content the argument of performance curves with hyperparameter optimization
-- *Rosenbrock function with hyper-optimizationlabel_list.txt* content the labels of performance curves with hyperparameter optimization
-- *Rosenbrock function with hyper-optimizationvalues_list.txt* content the values of performance curves with hyperparameter optimization
-- *Slope.txt* content the linearized inclanation of the performance curve with hyperparameter optimization
-- *Rosenbrock function without hyper-optimizationarg_list.txt* content the argument of performance curves without hyperparameter optimization
-- *Rosenbrock function without hyper-optimizationlabel_list.txt* content the labels of performance curves without hyperparameter optimization
-- *Rosenbrock function without hyper-optimizationvalues_list.txt* content the values of performance curves without hyperparameter optimization
-- *Slope_robust.txt* content the linearized inclanation of the performance curve without hyperparameter optimization
-- *ParamPath.txt* content the hyperparameters for all argument values for all algorithms
+- *Rosenbrock function with hyper-optimizationarg_list.txt*
+  content the argument of performance curves with hyperparameter optimization
+- *Rosenbrock function with hyper-optimizationlabel_list.txt*
+  content the labels of performance curves with hyperparameter optimization
+- *Rosenbrock function with hyper-optimizationvalues_list.txt*
+  content the values of performance curves with hyperparameter optimization
+- *Slope.txt*
+  content the linearized inclanation of the performance curve with hyperparameter optimization
+- *Rosenbrock function without hyper-optimizationarg_list.txt*
+  content the argument of performance curves without hyperparameter optimization
+- *Rosenbrock function without hyper-optimizationlabel_list.txt*
+  content the labels of performance curves without hyperparameter optimization
+- *Rosenbrock function without hyper-optimizationvalues_list.txt*
+  content the values of performance curves without hyperparameter optimization
+- *Slope_robust.txt*
+  content the linearized inclanation of the performance curve without hyperparameter optimization
+- *ParamPath.txt*
+  content the hyperparameters for all argument values for all algorithms
 4. Plot the fetched data:
 ```
 with open('Rosenbrock function without hyper-optimizationarg_list.txt', 'r') as f:
@@ -56,6 +65,6 @@ The data will be generated in the container. It is possible to collect it and pl
 
 # How to launch the experiments[3 way: Precomputed]
 1. Download the data
-The data was precomputed in transparent way by means of GitHub Actions. The data available in Latest Release in Zip archaive.
-2. Unzip arhavive and plot
-It is possible to unzip archaive and plot in way described above.
+   The data was precomputed in transparent way by means of GitHub Actions. The data available in Latest Release in Zip archaive.
+3. Unzip arhavive and plot
+   It is possible to unzip archaive and plot in way described above.
