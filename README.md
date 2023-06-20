@@ -49,7 +49,7 @@ for i in range(len(label)):
   ax.plot(arr_x, arr[i], label=lab)
 plt.show()
 ```
-Graphs of other data are plotted in the same way.
+Graphs of other data can be plotted in the same way.
 
 # How to launch the experiments[2 way: Dockerfile]
 1. Build the Docker image
@@ -66,5 +66,5 @@ The data will be generated in the container. It is possible to collect it and pl
 # How to launch the experiments[3 way: Precomputed]
 1. Download the data<br />
    The data was precomputed in transparent way by means of GitHub Actions. The data available in Latest Release in Zip archaive.
-3. Unzip arhavive and plot<br />
+3. Unzip archaive and plot it<br />
    It is possible to unzip archaive and plot in way described above.
