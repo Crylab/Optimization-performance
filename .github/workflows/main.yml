@@ -1,0 +1,25 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  IMAGE_NAME: my-docker-image
+  RELEASE_NAME: my-release
+  
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+    env:
+      tag_name: my-image-name:$(date +%s)
+    steps:
+    - uses: actions/checkout@v3
+    - name: Build the Docker image
+      run: docker build  -t ${{ env.IMAGE_NAME }} . --file Dockerfile
+    - name: Run Docker image
+      run: docker run -d --name my-container ${{ env.IMAGE_NAME }}
