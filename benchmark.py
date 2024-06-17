@@ -663,7 +663,7 @@ if __name__ == "__main__":
                 arr_x.append(k)
             arg_list.append((labels[og], paramSpace[og], k))
     # Compute in parallel
-    out, param = computational_conveuer(mp_func, arg_list, 23)
+    out, param = computational_conveuer(mp_func, arg_list, 96)
     # store the data
     kter = 0
     for og in range(n):
