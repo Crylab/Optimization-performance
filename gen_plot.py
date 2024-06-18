@@ -33,11 +33,11 @@ def chart_with_optimization():
         obj.set_ylim(0, 1)
         obj.set_xlim(argument[0], argument[-1])
         if each > 12:
-            obj.set_xlabel("Coefficient K")
+            obj.set_xlabel("Rosenbrock parameter b")
         obj.legend()
         
     plt.tight_layout(rect=[0, 0, 1, 0.98])
-    fig.suptitle("Performance with hyper-optimization")
+    fig.suptitle("Performance on Rosnbrock function with hyperparameters optimization")
     fig.subplots_adjust(wspace=0.005, hspace=0.1)
     plt.savefig(f"img/Chart_with_opt.pdf")
     print(f"Look at the picture: img/Chart_with_opt.pdf")
@@ -70,11 +70,11 @@ def chart_without_optimization():
         obj.set_ylim(0, 15)
         obj.set_xlim(argument[0], argument[-1])
         if each > 12:
-            obj.set_xlabel("Coefficient K")
+            obj.set_xlabel("Rosenbrock parameter b")
         obj.legend()
         
     plt.tight_layout(rect=[0, 0, 1, 0.98])
-    fig.suptitle("Performance without hyper-optimization")
+    fig.suptitle("Performance on Rosenbrock function without hyperparameters optimization")
     fig.subplots_adjust(wspace=0.005, hspace=0.1)
     plt.savefig(f"img/Chart_without_opt.pdf")
     print(f"Look at the picture: img/Chart_without_opt.pdf")
@@ -126,9 +126,9 @@ def chart_slope():
         ax.annotate(txt, (slope_list[i], value_arr[i]*vertical_shift))
         
     #plt.tight_layout(rect=[0, 0, 1, 0.98])
-    fig.suptitle("Algorithms comparisons")
-    ax.set_xlabel("Slope on Rosenbrock function")
-    ax.set_ylabel("Loss, (log scale)")
+    fig.suptitle("Algorithms map: overall performace vs performance decline rate")
+    ax.set_xlabel("Performance slope coeffitient in Rosenbrick function")
+    ax.set_ylabel("Loss at b=100 (overall performance)")
     ax.grid(True)
     ax.set_ylim(0.03,1.2)
     ax.set_xlim(0.5, 9)
@@ -201,9 +201,9 @@ def chart_robust():
             continue
         ax.annotate(txt, (diff[i], range_list[i]*vertical_shift))
         
-    #plt.tight_layout(rect=[0, 0, 1, 0.98])
-    fig.suptitle("Robust comparison")
-    ax.set_xlabel("Slope relative difference")
+    plt.tight_layout(rect=[0.05, 0.05, 1.0, 0.97])
+    fig.suptitle("Robust comparison: Slope relative difference vs Learning rate range")
+    ax.set_xlabel("Slope relative difference between performance \n with and without hyperparameters optimization")
     ax.set_ylabel("Learning rate range")
     ax.grid(True)
     ax.set_ylim(0.0, 5)
@@ -246,8 +246,8 @@ def chart_bar():
     plt.bar(sorted_labels, sorted_values, color='skyblue')
     
     # Add title and labels
-    plt.title('Relative LR Range')
-    plt.ylabel('Relative LR Range')
+    plt.title('Learning rate range')
+    plt.ylabel('Learning rate range')
     plt.xticks(rotation=90)
     plt.grid(axis='y')
     plt.tight_layout(rect=[0, 0, 1, 0.98])
@@ -257,9 +257,9 @@ def chart_bar():
     
 
 if __name__ == "__main__":
-    #chart_with_optimization()
-    #chart_without_optimization()    
-    #chart_slope()
+    chart_with_optimization()
+    chart_without_optimization()
+    chart_slope()
     chart_bar()
     chart_robust()
     
