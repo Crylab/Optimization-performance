@@ -48,11 +48,11 @@ def chart_with_optimization():
 
 def three_bar():
     # Data
-    with open("Rosenbrock function with hyper-optimizationarg_list.txt", 'r') as f:
+    with open("Rosenbrock2 function with hyper-optimizationarg_list.txt", 'r') as f:
         argument = json.load(f)
-    with open("Rosenbrock function with hyper-optimizationlabel_list.txt", 'r') as f:
+    with open("Rosenbrock2 function with hyper-optimizationlabel_list.txt", 'r') as f:
         label = json.load(f)
-    with open("Rosenbrock function with hyper-optimizationvalue_list.txt", 'r') as f:
+    with open("Rosenbrock2 function with hyper-optimizationvalue_list.txt", 'r') as f:
         value = json.load(f)
 
     categories = []
@@ -69,7 +69,7 @@ def three_bar():
     bar_width = 0.6
 
     # Plot
-    list_of_indexes = [1, 4, 9]
+    list_of_indexes = range(3)
     fig, ax = plt.subplots(3, 1, figsize=(8, 12))
     for i in range(3):
         values = []
@@ -86,7 +86,7 @@ def three_bar():
 
         # Title and labels
         #ax.set_title('Performance on Rosenbrock function with hyperparameters optimization', fontsize=16, fontweight='bold')
-        ax[i].set_ylabel(f'Loss value for b={argument[list_of_indexes[i]]:.4}', fontsize=14)
+        ax[i].set_ylabel(f'Loss value for b={argument[list_of_indexes[i]]}', fontsize=14)
         ax[i].set_yscale("log")
 
         # Rotate category labels for readability
@@ -222,12 +222,119 @@ def rosen_visualization():
     plt.savefig(f"img/rosen.pdf")
     print(f"Look at the picture: img/rosen.pdf")
 
+def horizontal_bar():
+
+    # Data
+    with open("Rosenbrock2 function with hyper-optimizationarg_list.txt", 'r') as f:
+        argument = json.load(f)
+    with open("Rosenbrock2 function with hyper-optimizationlabel_list.txt", 'r') as f:
+        label = json.load(f)
+    with open("Rosenbrock2 function with hyper-optimizationvalue_list.txt", 'r') as f:
+        value = json.load(f)
+
+    categories = []
+    
+    for i, each in enumerate(label):
+        nice_label = each.replace("optim.", "")
+        nice_label = nice_label.replace("torch.", "")
+        categories.append(nice_label)
+    
+    values = [[] for _ in range(len(argument))]
+    for j in range(len(argument)):
+        for i in range(len(label)):
+            values[j].append(value[i][j])
+
+    colors = plt.cm.viridis(np.linspace(0.2, 0.8, len(argument)))
+
+    bar_width = 1 / (len(values)+1)
+
+    list_of_indexes = range(3)
+    fig = plt.figure(figsize=(8, 12))
+
+    y_positions = np.arange(len(categories))
+
+    for j in range(len(argument)):
+        plt.barh(y_positions + (j * bar_width), values[j], color=colors[j], height=bar_width, label=f'Rosenbrock b={argument[j]}')
+
+    plt.yticks(y_positions, categories) 
+
+    plt.xscale("log")
+
+    plt.legend()
+
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+
+    plt.savefig(f"img/BarChart_with_opt.pdf")
+    print(f"Look at the picture: img/BarChart_with_opt.pdf")
+
+def horizontal_danilo():
+
+    # Data
+    with open("Rosenbrock2 function with hyper-optimizationarg_list.txt", 'r') as f:
+        argument = json.load(f)
+    with open("Rosenbrock2 function with hyper-optimizationlabel_list.txt", 'r') as f:
+        label = json.load(f)
+    with open("Rosenbrock2 function with hyper-optimizationvalue_list.txt", 'r') as f:
+        value = json.load(f)
+
+    categories = []
+    
+    for i, each in enumerate(label):
+        nice_label = each.replace("optim.", "")
+        nice_label = nice_label.replace("torch.", "")
+        categories.append(nice_label)
+    
+    values = [[] for _ in range(len(argument))]
+    for j in range(len(argument)):
+        for i in range(len(label)):
+            values[j].append(value[i][j])
+
+
+    colors = plt.cm.viridis(np.linspace(0.0, 1.0, len(categories) +1))
+
+    color_smart = []
+    half = int((len(categories)+1)/2)
+    for i in range(half):
+        color_smart.append(colors[i])
+        color_smart.append(colors[i+half])
+
+    bar_width = 1.0
+
+    list_of_indexes = range(len(argument))
+    fig, ax = plt.subplots(1, 4, figsize=(16, 8))
+
+    y_positions = np.arange(len(categories))
+
+    for j in range(len(argument)):
+
+        sort_dict = {}
+
+        for i, each in enumerate(categories):
+            sort_dict[each] = values[j][i]
+
+        sorted_by_values = dict(sorted(sort_dict.items(), key=lambda item: item[1]))
+
+
+        ax[j].barh(sorted_by_values.keys(), sorted_by_values.values(), color=color_smart, height=bar_width)
+        ax[j].set_xscale("log")
+        ax[j].set_xlabel(f'Loss value for b={argument[j]}', fontsize=14)
+        ax[j].grid(True, linestyle='--', linewidth=0.7, color='gray', alpha=0.7)
+
+
+    plt.grid(axis='y', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+
+    plt.savefig(f"img/BarChart_with_opt.pdf")
+    print(f"Look at the picture: img/BarChart_with_opt.pdf")
 
 if __name__ == "__main__":
     #three_bar()
     #dummy_bar()
-    rosen_visualization()
-    
-    
-    
+    #rosen_visualization()
+
+    #horizontal_bar()
+    #test()
+
+    horizontal_danilo()
     

@@ -1,0 +1,1 @@
+nohup /root/.cache/pypoetry/virtualenvs/paper-2023-optimization-survey-code-BkRL1q-b-py3.9/bin/python /var/lib/docker/volumes/ruslan-shaiakhmetov-volume/_data/paper-2023-optimization-survey-code/deleteme.py > log.log 2>&1 &
