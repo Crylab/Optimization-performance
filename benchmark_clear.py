@@ -84,7 +84,7 @@ def generate_optimization_space():
     paramSpace["optim.MADGRAD"] = {
         "lr": hp.loguniform("lr", -12, 0),
         "weight_decay": hp.loguniform("weight_decay", -12, 0),
-        "momentum": hp.lognormal("momentum", -12, 0),
+        "momentum": hp.loguniform("momentum", -12, 0),
     }
 
     paramSpace["optim.AdaBound"] = {

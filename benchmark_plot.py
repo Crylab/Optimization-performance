@@ -431,21 +431,38 @@ def resnet_plot():
     plt.savefig("img/Resnet_bar.pdf", format="pdf", dpi=300)
     plt.close()
 
-if __name__ == "__main__":
-    #chart_with_optimization()
-    #chart_without_optimization()
-    #chart_slope()
-    #chart_bar()
-    #chart_robust()
-    resnet_plot()
-    exit()
-    folder_name = "img"
+def plot_horizontal_bar_chart(data, ax):
+    """
+    Plots a horizontal bar chart on the provided AxesSubplot (ax) with a log-scaled x-axis.
+    
+    Parameters:
+        data (dict): Dictionary where keys are categories (str) and values are corresponding numeric values.
+        ax (AxesSubplot): Matplotlib AxesSubplot object to draw the chart on.
+    """
+    # Sort the data by values
+    sorted_data = dict(sorted(data.items(), key=lambda item: item[1]))
+    
+    # Generate positions and colors
+    categories = list(sorted_data.keys())
+    values = list(sorted_data.values())
+    num_categories = len(categories)
+    colors = cm.viridis(np.linspace(0.0, 1.0, num_categories))
 
-    # Check and create the folder if it doesn't exist
-    if not os.path.exists(folder_name):
-        os.makedirs(folder_name)
-        print(f"Folder '{folder_name}' created.")
+    color_smart = []
+    half = int((len(categories)+1)/2)
+    for i in range(half):
+        color_smart.append(colors[i])
+        color_smart.append(colors[i+half])
+    
+    # Plot horizontal bars
+    ax.barh(categories, values, color=colors, height=1.0)
+    
+    # Set log scale for the x-axis
+    ax.set_xscale("log")
+    ax.set_xlabel('Loss Value', fontsize=14)
+    ax.grid(True, linestyle='--', linewidth=0.7, color='gray', alpha=0.7)
 
+def plot_all():
     algorithm_list = [
         "torch.optim.SGD",
         "torch.optim.Adagrad",
@@ -484,3 +501,25 @@ if __name__ == "__main__":
             print(f'File {file_name} has failed')
     plot_hyperoptimization(another_list)
   
+
+if __name__ == "__main__":
+    #chart_with_optimization()
+    #chart_without_optimization()
+    #chart_slope()
+    #chart_bar()
+    #chart_robust()
+    #resnet_plot()
+    #exit()
+    folder_name = "img"
+
+    # Check and create the folder if it doesn't exist
+    if not os.path.exists(folder_name):
+        os.makedirs(folder_name)
+        print(f"Folder '{folder_name}' created.")
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    # Plot the chart
+    plot_horizontal_bar_chart(cleaned_data, ax)
+    # Adjust layout and show
+    plt.tight_layout()
+    
