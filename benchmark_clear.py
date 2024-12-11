@@ -26,7 +26,6 @@ def generate_optimization_space():
     paramSpace["torch.optim.Adagrad"] = {"lr": hp.loguniform("lr", -12, 0)}
     paramSpace["optim.AggMo"] = {
          "lr": hp.loguniform("lr", -12, 0),
-         "weight_decay": hp.loguniform("weight_decay", -12, -2),
          "beta1": hp.uniform("beta1", 0.0, 1.0),
          "beta2": 1-hp.loguniform("beta2", -0.2, 0.0),
          "beta3": 1-hp.loguniform("beta3", -0.2, 0.0),
@@ -49,6 +48,13 @@ def generate_optimization_space():
         "beta2": 1-hp.loguniform("beta2", -0.2, 0.0),
     }
 
+    adam_weight = {
+        "lr": hp.loguniform("lr", -12, 0),
+        "beta1": hp.uniform("beta1", 0.0, 1.0),
+        "beta2": 1-hp.loguniform("beta2", -0.2, 0.0),
+        "weight_decay": hp.loguniform("weight_decay", -12, -2)
+    }
+
     paramSpace["torch.optim.Adam"] = adam_like
     paramSpace["torch.optim.Adamax"] = adam_like
     paramSpace["torch.optim.NAdam"] = adam_like
@@ -59,8 +65,10 @@ def generate_optimization_space():
     paramSpace["optim.SWATS"] = adam_like
     paramSpace["optim.DiffGrad"] = adam_like
     paramSpace["optim.Yogi"] = adam_like
-    paramSpace["optim.Lamb"] = adam_like
     paramSpace["optim.AdamP"] = adam_like
+
+    paramSpace["optim.Lamb"] = adam_weight
+    paramSpace["optim.NovoGrad"] = adam_weight
 
     paramSpace["torch.optim.SGDW"] = {
         "lr": hp.loguniform("lr", -12, 0),
@@ -78,7 +86,7 @@ def generate_optimization_space():
         "lr": hp.loguniform("lr", -12, 0),
         "beta1": hp.uniform("beta1", 0.0, 1.0),
         "beta2": 1-hp.loguniform("beta2", -0.2, 0.0),
-        "weight_decay": hp.loguniform("weight_decay", -12, 0)
+        "beta3": hp.uniform("beta3", 0.0, 1.0)
     }
 
     paramSpace["optim.MADGRAD"] = {

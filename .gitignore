@@ -1,5 +1,5 @@
 *.txt
 *.pdf
-img
+img*
 data*
 log.log

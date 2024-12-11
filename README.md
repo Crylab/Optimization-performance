@@ -1,70 +1,24 @@
+[![DOI](https://zenodo.org/badge/656170700.svg)](https://doi.org/10.5281/zenodo.14279352)
 # Experiments of optimization algorithms performance
 The repository content the code of experiments to compare optimization algorithms performance.<br />
 The reference article will be available soon. 
-# How to launch the experiments[1 way: on your machine]
-1. Be sure to have Python 3.9 and install dependences:
+# How to launch the experiments
+1. Be sure to have Python 3.9 and install dependences with Poetry package manager:
 ```
-pip3 install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
-pip3 install torch_optimizer
-pip3 install hyperopt
-pip3 install scikit-learn
+poetry install
 ```
 
 2. Run the experiments:
 ```
-python benchmark.py
+poetry run python benchmark_clear.py
+poetry run python benchmark_final.py
+poetry run python benchmark_resnet.py
 ```
-3. Fetch the results:
-At the end of the experiment, the set of .txt files is generated.
-- *Rosenbrock function with hyper-optimizationarg_list.txt*<br />
-  content the argument of performance curves with hyperparameter optimization
-- *Rosenbrock function with hyper-optimizationlabel_list.txt*<br />
-  content the labels of performance curves with hyperparameter optimization
-- *Rosenbrock function with hyper-optimizationvalues_list.txt*<br />
-  content the values of performance curves with hyperparameter optimization
-- *Slope.txt*<br />
-  content the linearized inclanation of the performance curve with hyperparameter optimization
-- *Rosenbrock function without hyper-optimizationarg_list.txt*<br />
-  content the argument of performance curves without hyperparameter optimization
-- *Rosenbrock function without hyper-optimizationlabel_list.txt*<br />
-  content the labels of performance curves without hyperparameter optimization
-- *Rosenbrock function without hyper-optimizationvalues_list.txt*<br />
-  content the values of performance curves without hyperparameter optimization
-- *Slope_robust.txt*<br />
-  content the linearized inclanation of the performance curve without hyperparameter optimization
-- *ParamPath.txt*<br />
-  content the hyperparameters for all argument values for all algorithms
+3. The result are saved in corresponded folders: data, data_without, data_ResNet.
 4. Plot the fetched data:
 ```
-with open('Rosenbrock function without hyper-optimizationarg_list.txt', 'r') as f:
-  arr_x = json.load(f)
-with open('Rosenbrock function without hyper-optimizationlabel_list.txt', 'r') as f:
-  label = json.load(f)
-with open('Rosenbrock function without hyper-optimizationvalue_list.txt', 'r') as f:
-  arr = json.load(f) 
-fig = plt.figure()
-ax = fig.add_subplot(111)
-for i in range(len(label)):
-  lab = label[i].split(".")[-1]
-  ax.plot(arr_x, arr[i], label=lab)
-plt.show()
+poetry run python benchmark_smart_plot.py
 ```
-Graphs of other data can be plotted in the same way.
+Charts demonstrated in the paper will be saved in img folder.
 
-# How to launch the experiments[2 way: Dockerfile]
-1. Build the Docker image
-```
-docker build -t image_name . --file Dockerfile
-```
-2. Run the Docker image
-```
-docker run -d --name my-container image_name
-```
-3. Fetch and plot
-The data will be generated in the container. It is possible to collect it and plot in way described above.
-
-# How to launch the experiments[3 way: Precomputed]
-1. Download the data<br />
-   The data was precomputed in transparent way by means of GitHub Actions. The data available in Latest Release in Zip archaive.
-3. Unzip archaive and plot it<br />
-   It is possible to unzip archaive and plot in way described above.
+Thank you for your attention!

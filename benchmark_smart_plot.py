@@ -8,6 +8,7 @@ import numpy as np
 import os
 from matplotlib.ticker import LogLocator
 from multiprocessing import Pool
+from matplotlib.ticker import MaxNLocator
 
 viridis = plt.get_cmap()
 
@@ -64,7 +65,7 @@ def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', s
     ax.set_xlabel(xlabel)
     ax.grid(True, linestyle='--', linewidth=0.7, color='gray', alpha=0.7)
  
-def plot_portrait(file_name, ax, n_trajectories = 1000):
+def plot_portrait(file_name, ax, n_trajectories = 1000, name=''):
     # Load JSON file
     
     with open("data/"+file_name+".json", "r") as json_file:
@@ -81,7 +82,8 @@ def plot_portrait(file_name, ax, n_trajectories = 1000):
             y_vals = [point[1] for point in points]
     
             # Plot the points
-            ax.plot(x_vals, y_vals, color=cm.viridis(i/n_trajectories), linewidth=1.0)
+            ax.plot(x_vals, y_vals, color=cm.viridis(i/n_trajectories), linewidth=1.0, alpha=0.25)
+            #ax.plot(x_vals, y_vals, color=cm.viridis(np.random.random()), linewidth=1.0)
     
     # Customize the plot
     cross_size = 0.05
@@ -96,9 +98,17 @@ def plot_portrait(file_name, ax, n_trajectories = 1000):
     ax.set_xlim([0, 2])
     ax.set_ylim([0, 2])
     ax.set_aspect('equal', 'box')
+    ax.text(
+        0.95, 0.95,                   # Position (x, y) in axes coordinates
+        name,                # The text content
+        fontsize=14,                  # Font size
+        ha='right', va='top',         # Align the text
+        transform=ax.transAxes,        # Use the current axes' coordinate system
+        alpha=0.9,
+    ).set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
     ax.grid(True)
 
-def plot_loss(file_name, ax, n_trajectories = 1000):
+def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
     # Load JSON file
     with open("data/"+file_name+".json", "r") as json_file:
         data = json.load(json_file)
@@ -110,12 +120,26 @@ def plot_loss(file_name, ax, n_trajectories = 1000):
         # Extract x and y values
         if "loss" in key and i < n_trajectories and not any(point > 10**10 for point in points):
             i += 1    
-            # Plot the points
-            ax.plot(points, color=cm.viridis(i/n_trajectories), linewidth=1.0)
+            # Plot the points with consistent color
+            ax.plot(points, color=cm.viridis(i/n_trajectories), linewidth=1.0, alpha=0.5)
+   #         ax.plot(points, color=cm.viridis(np.random.random()), linewidth=1.0, alpha=0.5)
     
     ax.set_xlabel("Iterations")
     ax.set_ylabel("Loss value")
-    ax.set_yscale('log')
+    ax.set_ylim((0, None))
+    ax.set_xlim((0, 1000))
+    ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
+    ax.set_yscale('symlog', linthresh=linthresh)
+    text = ax.text(
+        0.98, 0.95,                   # Position (x, y) in axes coordinates
+        name,                # The text content
+        fontsize=14,                  # Font size
+        ha='right', va='top',         # Align the text
+        transform=ax.transAxes,        # Use the current axes' coordinate system
+        color='black',
+        alpha=1,
+    )
+    text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
     ax.grid(True)
 
 if __name__ == "__main__":
@@ -151,7 +175,7 @@ if __name__ == "__main__":
             "optim.QHAdam",
         ]
 
-    if True:
+    if False:
 
         fig, ax = plt.subplots(1, 4, figsize=(12, 6))
 
@@ -283,6 +307,7 @@ if __name__ == "__main__":
         # Start to generate charts
         rosen_list = ['1000.0', '100.0', '10.0', '1.0']
         plot_data = {}
+        plot_1000 = {}
         for n_plot, b in enumerate(rosen_list):
             for each in algorithm_list:
                 nice_label = each.replace("optim.", "").replace("torch.", "")
@@ -291,6 +316,7 @@ if __name__ == "__main__":
                     data = json.load(json_file)
                     if n_plot == 0:
                         plot_data[nice_label] = [data["Best"]["lr"]]
+                        plot_1000[nice_label] = data["Best"]["lr"]
                     else:
                         plot_data[nice_label].append(data["Best"]["lr"])
         
@@ -307,8 +333,8 @@ if __name__ == "__main__":
             max_dict[key] = max_val
             relative_dict[key] = max_val/min_val
 
-        plot_horizontal_bar_chart(max_dict, ax[0], compare_data=min_dict, show_increase=False,
-                                  xlabel="Optimized learning rate: \nFrom minimal (shades of green) \nto maximum (shades of red)")
+        plot_horizontal_bar_chart(plot_1000, ax[0],
+                                  xlabel="Optimized learning rate for \n Rosenbrock function b=1000.0")
         plot_horizontal_bar_chart(relative_dict, ax[1],
                                   xlabel="Ratio of maximum and \nminimum values of \nlearning rate")
 
@@ -316,120 +342,100 @@ if __name__ == "__main__":
         plt.tight_layout()
         plt.savefig("img/Smart_plot_2.pdf", format="pdf", dpi=300)
         plt.close()
-
+   
     if False:
-
-        fig, ax = plt.subplots(figsize=(12, 6))
-        # ########################
-        # Performance over b=1000     
-        # ##########################   
-        parallel_task = []
-        for each in algorithm_list:
-            nice_label = each.replace("optim.", "").replace("torch.", "")
-            file_name = f'data/{nice_label}_1000.0_optimtrack.json'
-            parallel_task.append(file_name)
-        def parallel_acc(file_name):
-            with open(file_name, "r") as json_file:
-                data = json.load(json_file)
-                accumulate = 0.0
-                total_number = 300
-                for i in range(300):
-                    value = sum(data[f'loss_{i}'])
-                    if not np.isnan(value):
-                        accumulate += value
-                    else:
-                        total_number -= 1
-            return accumulate/total_number
-        with Pool() as pool:
-            # Use starmap to pass multiple arguments
-            results = pool.map(parallel_acc, parallel_task)
-
-        performance_data = {}
-        for i, each in enumerate(algorithm_list):
-            nice_label = each.replace("optim.", "").replace("torch.", "")
-            performance_data[nice_label] = results[i]
-
-        # ########################
-        # Learning rate variation
-        # #########################
-        rosen_list = ['1000.0', '100.0', '10.0', '1.0']
-        plot_data = {}
-        for n_plot, b in enumerate(rosen_list):
-            for each in algorithm_list:
-                nice_label = each.replace("optim.", "").replace("torch.", "")
-                file_name = f'data/{nice_label}_{b}_hypertrack.json' 
-                with open(file_name, "r") as json_file:
-                    data = json.load(json_file)
-                    if n_plot == 0:
-                        plot_data[nice_label] = [data["Best"]["lr"]]
-                    else:
-                        plot_data[nice_label].append(data["Best"]["lr"])
-
-        # Initialize the dictionaries
-        min_dict = {}
-        max_dict = {}
-        relative_dict = {}
-
-        # Populate the dictionaries
-        for key, values in plot_data.items():
-            min_val = min(values)
-            max_val = max(values)
-            min_dict[key] = min_val
-            max_dict[key] = max_val
-            relative_dict[key] = max_val/min_val
-        
-        # #################
-        # Chart generation
-        # #################
-
-        # Convert dictionaries into lists
-        keys = list(performance_data.keys())
-        values1 = list(performance_data.values())
-        values2 = list(relative_dict.values())
-
-        # Create scatter plot
-        plt.figure(figsize=(8, 6))
-        plt.scatter(values1, values2, color='blue', label='Data Points')
-
-        # Annotate points with keys as labels
-        for i, key in enumerate(keys):
-            plt.text(values1[i], values2[i], str(key), fontsize=10, ha='right')
-
-        # Add labels and legend
-        plt.xlabel('Values from dict1')
-        plt.ylabel('Values from dict2')
-        plt.title('Scatter Plot with Keys as Labels')
-        plt.legend()
-        plt.xscale('log')
-        plt.yscale('log')
-        plt.grid(True)
-
-        # Adjust layout and show
-        plt.tight_layout()
-        plt.savefig("img/Smart_plot_3.pdf", format="pdf", dpi=300)
+        fig, ax = plt.subplots(4, 1, figsize=(6, 12))
+        # n_traj = 100
+        plot_loss("SGD_1.0_optimtrack", ax[0], name="Asymp. convergence: 100 SGD real., b=1", n_trajectories=100, linthresh=10e-16)
+        plot_loss("Adagrad_1.0_optimtrack", ax[1], name="Init. cond. dep.: 500 AdaGrad real., b=1", n_trajectories=500, linthresh=10e-25)
+        plot_loss("Adam_1.0_optimtrack", ax[2], name="Stable oscillations: 5 Adam real., b=1", n_trajectories=5, linthresh=10e-6)
+        plot_loss("Yogi_100.0_optimtrack", ax[3], name="Mixed behavior: 500 Yogi real., b=100", n_trajectories=500, linthresh=10e-5)
+        # TODO: change the y axis for Adagrad
+        plt.tight_layout(pad=0.1)
+        plt.savefig("img/Smart_plot_3.pdf")
         plt.close()
 
-    
-    if False:
-        fig, ax = plt.subplots(2, 3, figsize=(12, 6), height_ratios=(4, 2))
+    if True:
+        fig, ax = plt.subplots(3, 2, figsize=(8, 12))
+        n_traj = 200
+        plot_portrait("AdaBound_1.0_optimtrack", ax[0, 0], name="AdaBound: b=1.0", n_trajectories=n_traj)
+        plot_portrait("AdaBound_100.0_optimtrack", ax[1, 0], name="AdaBound: b=100.0", n_trajectories=n_traj)
+        plot_portrait("AdaBound_1000.0_optimtrack", ax[2, 0], name="AdaBound: b=1000.0", n_trajectories=n_traj)
 
-        plot_portrait("AdaBound_1.0_optimtrack", ax[0, 0])
-        plot_portrait("AdaBound_100.0_optimtrack", ax[0, 1])
-        plot_portrait("AdaBound_1000.0_optimtrack", ax[0, 2])
-        plot_loss("AdaBound_1.0_optimtrack", ax[1, 0])
-        plot_loss("AdaBound_100.0_optimtrack", ax[1, 1])
-        plot_loss("AdaBound_1000.0_optimtrack", ax[1, 2])
+        plot_portrait("Adam_1.0_optimtrack", ax[0, 1], name="Adam: b=1.0", n_trajectories=n_traj)
+        plot_portrait("Adam_100.0_optimtrack", ax[1, 1], name="Adam: b=100.0", n_trajectories=n_traj)
+        plot_portrait("Adam_1000.0_optimtrack", ax[2, 1], name="Adam: b=1000.0", n_trajectories=n_traj)
 
         plt.tight_layout(pad=0.1)
-        plt.savefig("img/AdaBound.pdf", format="pdf", dpi=300)
+        plt.savefig("img/Smart_plot_4.png", format="png", dpi=300)
         plt.close()
 
     if False:
-        for each in algorithm_list:
-            nice_label = each.replace("optim.", "").replace("torch.", "")
-            fig, ax = plt.subplots(figsize=(12, 6))
-            plot_loss(f'{nice_label}_100.0_optimtrack', ax, n_trajectories=1000)
-            plt.tight_layout(pad=0.1)
-            plt.savefig(f'img/1_{nice_label}.pdf', format="pdf", dpi=300)
-            plt.close()
-    
+        fig, ax = plt.subplots(3, 2, figsize=(8, 12))
+
+        plot_portrait("MADGRAD_1.0_optimtrack", ax[0, 0], name="MADGRAD: b=1.0")
+        plot_portrait("MADGRAD_10.0_optimtrack", ax[1, 0], name="MADGRAD: b=10.0")
+        plot_portrait("MADGRAD_100.0_optimtrack", ax[2, 0], name="MADGRAD: b=100.0")
+
+        plot_portrait("QHAdam_1.0_optimtrack", ax[0, 1], name="QHAdam: b=1.0")
+        plot_portrait("QHAdam_10.0_optimtrack", ax[1, 1], name="QHAdam: b=10.0")
+        plot_portrait("QHAdam_100.0_optimtrack", ax[2, 1], name="QHAdam: b=100.0")
+
+        plt.tight_layout(pad=0.1)
+        plt.savefig("img/Smart_plot_5.png", format="png", dpi=300)
+        plt.close()
+
+    if False:
+        i=0
+        j=0
+        for algorithm in algorithm_list:
+            if i == 0:
+                fig, ax = plt.subplots(4, 3, figsize=(9, 12))
+            nice_label = algorithm.replace("optim.", "").replace("torch.", "")
+
+            plot_portrait(f'{nice_label}_1.0_optimtrack', ax[0, i], name=f'{nice_label}: b=1.0')
+            plot_portrait(f'{nice_label}_10.0_optimtrack', ax[1, i], name=f'{nice_label}: b=10.0')
+            plot_portrait(f'{nice_label}_100.0_optimtrack', ax[2, i], name=f'{nice_label}: b=100.0')
+            plot_portrait(f'{nice_label}_1000.0_optimtrack', ax[3, i], name=f'{nice_label}: b=1000.0')
+            if i == 2:
+                plt.tight_layout(pad=0.1)
+                plt.savefig(f'img/APNDX_{j}.png', format="png", dpi=300)
+                plt.close()
+                i = 0
+                j+=1
+            else:
+                i+=1
+        plt.tight_layout(pad=0.1)
+        plt.savefig(f'img/APNDX_{j}.png', format="png", dpi=300)
+        plt.close()
+
+    if False:
+        learning_rate = 0.001
+        dict_acc = {}
+        dict_auc = {}
+        for Algorithm in algorithm_list:
+            if Algorithm == "torch.optim.SGDW": continue
+            if "torch.optim.AMSgrad" == Algorithm:
+                result = "torch.optim.Adam(model.parameters(), lr=" + str(learning_rate) + ", amsgrad=True)"
+            else:
+                result = Algorithm + "(model.parameters(), lr=" + str(learning_rate) + ")"
+            with open(f'data_ResNet/ResNet_{result}.json', "r") as json_file:
+                data = json.load(json_file)
+                nice_label = Algorithm.replace("optim.", "").replace("torch.", "")
+                dict_acc[nice_label] = data["Total_accuracy"]
+                dict_auc[nice_label] = sum(data["Optimization_path"])/100
+
+        ### PLOTTING
+        fig, ax = plt.subplots(1, 2, figsize=(6, 6))
+        plot_horizontal_bar_chart(dict_acc, ax[0],
+                                  xlabel="Recognition accuracy, %")
+        plot_horizontal_bar_chart(dict_auc, ax[1],
+                                  xlabel="Averaged integral metric \nof ResNet-18 training")
+        # Adjust layout and show
+        ax[0].set_xscale("linear")
+        ax[1].set_xscale("linear")
+        ax[0].set_xlim((50, 90))
+        plt.tight_layout()
+        plt.savefig("img/Smart_plot_6.pdf", format="pdf", dpi=300)
+        plt.close()
+        
