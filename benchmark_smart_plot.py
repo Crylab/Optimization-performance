@@ -9,6 +9,7 @@ import os
 from matplotlib.ticker import LogLocator
 from multiprocessing import Pool
 from matplotlib.ticker import MaxNLocator
+from matplotlib.colors import LogNorm
 
 viridis = plt.get_cmap()
 
@@ -83,7 +84,7 @@ def plot_portrait(file_name, ax, n_trajectories = 1000, name=''):
     
             # Plot the points
             ax.plot(x_vals, y_vals, color=cm.viridis(i/n_trajectories), linewidth=1.0, alpha=0.25)
-            #ax.plot(x_vals, y_vals, color=cm.viridis(np.random.random()), linewidth=1.0)
+            # ax.plot(x_vals, y_vals, color=cm.viridis(np.random.random()), linewidth=1.0)
     
     # Customize the plot
     cross_size = 0.05
@@ -100,10 +101,10 @@ def plot_portrait(file_name, ax, n_trajectories = 1000, name=''):
     ax.set_aspect('equal', 'box')
     ax.text(
         0.95, 0.95,                   # Position (x, y) in axes coordinates
-        name,                # The text content
+        name,                         # The text content
         fontsize=14,                  # Font size
         ha='right', va='top',         # Align the text
-        transform=ax.transAxes,        # Use the current axes' coordinate system
+        transform=ax.transAxes,       # Use the current axes' coordinate system
         alpha=0.9,
     ).set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
     ax.grid(True)
@@ -122,7 +123,7 @@ def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
             i += 1    
             # Plot the points with consistent color
             ax.plot(points, color=cm.viridis(i/n_trajectories), linewidth=1.0, alpha=0.5)
-   #         ax.plot(points, color=cm.viridis(np.random.random()), linewidth=1.0, alpha=0.5)
+            # ax.plot(points, color=cm.viridis(np.random.random()), linewidth=1.0, alpha=0.5)
     
     ax.set_xlabel("Iterations")
     ax.set_ylabel("Loss value")
@@ -132,15 +133,60 @@ def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
     ax.set_yscale('symlog', linthresh=linthresh)
     text = ax.text(
         0.98, 0.95,                   # Position (x, y) in axes coordinates
-        name,                # The text content
+        name,                         # The text content
         fontsize=14,                  # Font size
         ha='right', va='top',         # Align the text
-        transform=ax.transAxes,        # Use the current axes' coordinate system
+        transform=ax.transAxes,       # Use the current axes' coordinate system
         color='black',
         alpha=1,
     )
     text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
     ax.grid(True)
+
+def rosen_visualization():
+
+    # Generate grid data for x and y
+    x = np.linspace(-2, 2, 400)
+    y = np.linspace(-2, 2, 400)
+    X, Y = np.meshgrid(x, y)
+
+    # Set custom boundaries for the colormap
+    vmin = 0.1  # Avoid log(0) by setting a minimum value greater than 0
+    vmax = 2000
+
+    # Create the figure and subplots (2 plots in one figure)
+    fig, axes = plt.subplots(2, 2, subplot_kw={'projection': '3d'}, figsize=(15, 10))
+
+    b_list = [1, 10, 100, 1000]
+
+    # Define the Rosenbrock function
+    def rosenbrock(x, y, b=100):
+        return (1 - x)**2 + b * (y - x**2)**2
+
+    for i in range(4):
+        # Calculate Z values using the Rosenbrock function
+        Z = rosenbrock(X, Y, b_list[i])
+        vmin = 0.1
+        vmax = np.max(Z)
+
+        norm = LogNorm(vmin=vmin, vmax=vmax)
+
+        smart_ax = axes[int(i/2), i%2]
+
+        # Plot the first surface on the first axis
+        surf = smart_ax.plot_surface(X, Y, Z, cmap='viridis', norm=norm)
+
+        smart_ax.set_title(f'Rosenbrock function with b={b_list[i]} \n $f(x, y) = (1 - x)^2 + {b_list[i]}(y - x^2)^2$')
+        smart_ax.set_xlabel('X')
+        smart_ax.set_ylabel('Y')
+        smart_ax.set_zlabel('f(x, y)')
+        smart_ax.view_init(elev=30, azim=60)  # Adjust the view angle for this subplot
+        fig.colorbar(surf, ax=smart_ax)
+
+    # Display the plot
+    plt.tight_layout()
+    plt.savefig(f"img/rosen.pdf")
+    print(f"Look at the picture: img/rosen.pdf")
 
 if __name__ == "__main__":
     folder_name = "img"
@@ -148,6 +194,9 @@ if __name__ == "__main__":
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
         print(f"Folder '{folder_name}' created.")
+
+    rosen_visualization()
+    exit()
 
     algorithm_list = [
             "torch.optim.SGD",
