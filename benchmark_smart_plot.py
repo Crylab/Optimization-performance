@@ -8,7 +8,6 @@ import numpy as np
 import os
 from matplotlib.ticker import LogLocator
 from multiprocessing import Pool
-from matplotlib.ticker import MaxNLocator
 from matplotlib.colors import LogNorm
 
 viridis = plt.get_cmap()
@@ -66,7 +65,7 @@ def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', s
     ax.set_xlabel(xlabel)
     ax.grid(True, linestyle='--', linewidth=0.7, color='gray', alpha=0.7)
  
-def plot_portrait(file_name, ax, n_trajectories = 1000, name=''):
+def plot_portrait(file_name, ax, n_trajectories = 1000, name='', left=False, bottom=False, description=''):
     # Load JSON file
     
     with open("data/"+file_name+".json", "r") as json_file:
@@ -93,20 +92,39 @@ def plot_portrait(file_name, ax, n_trajectories = 1000, name=''):
     path_effects=[pe.Stroke(linewidth=4, foreground='red'), pe.Normal()]
     ax.plot([low_cross, up_cross], [up_cross, low_cross], color='white', linewidth = 2, path_effects = path_effects)  # Horizontal line of the cross
     ax.plot([low_cross, up_cross], [low_cross, up_cross], color='white', linewidth = 2, path_effects = path_effects)  # Vertical line of the cross
+    ticks = [0.0, 0.5, 1.0, 1.5, 2.0]
+    tick_labels = ['0', '0.5', '1', '1.5', '2'] 
+    ax.set_xticks(ticks)
+    ax.axes.xaxis.set_ticklabels([])
+    ax.set_yticks(ticks)
+    ax.axes.yaxis.set_ticklabels([])
+    if left:      
+        ax.set_yticklabels(tick_labels)
 
-    #ax.set_xlabel("X")
-    #ax.set_ylabel("Y")
+    if bottom:
+        ax.set_xticklabels(tick_labels)
+    
     ax.set_xlim([0, 2])
     ax.set_ylim([0, 2])
     ax.set_aspect('equal', 'box')
     ax.text(
-        0.95, 0.95,                   # Position (x, y) in axes coordinates
+        0.05, 0.95,                   # Position (x, y) in axes coordinates
         name,                         # The text content
         fontsize=14,                  # Font size
-        ha='right', va='top',         # Align the text
+        ha='left', va='top',         # Align the text
         transform=ax.transAxes,       # Use the current axes' coordinate system
         alpha=0.9,
     ).set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
+
+    ax.text(
+        0.95, 0.05,                   # Position (x, y) in axes coordinates
+        description[0],                # The text content
+        fontsize=14,                  # Font size
+        ha='right', va='bottom',         # Align the text
+        transform=ax.transAxes,       # Use the current axes' coordinate system
+        alpha=0.9,
+    ).set_bbox(dict(facecolor=description[1], alpha=0.6, edgecolor='gray', boxstyle='round'))
+
     ax.grid(True)
 
 def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
@@ -116,6 +134,8 @@ def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
 
     # Iterate through keys (e.g., "0", "1", ...) and plot points
     i = 0
+    max_point = -np.inf
+    min_point = np.inf
     for key, points in data.items():
         
         # Extract x and y values
@@ -124,13 +144,28 @@ def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
             # Plot the points with consistent color
             ax.plot(points, color=cm.viridis(i/n_trajectories), linewidth=1.0, alpha=0.5)
             # ax.plot(points, color=cm.viridis(np.random.random()), linewidth=1.0, alpha=0.5)
-    
+
+            max_point = max(points) if max(points) > max_point else max_point
+            min_point = min(points) if min(points) < max_point else min_point
+
     ax.set_xlabel("Iterations")
     ax.set_ylabel("Loss value")
     ax.set_ylim((0, None))
     ax.set_xlim((0, 1000))
-    ax.yaxis.set_major_locator(MaxNLocator(nbins=6))
     ax.set_yscale('symlog', linthresh=linthresh)
+
+    even_powers = range(int(np.log10(linthresh)), int(np.log10(max_point)))  # Generate even powers from 0 to -24
+    step = 2
+    while len(even_powers) > 10:
+        even_powers = range(int(np.log10(linthresh)), int(np.log10(max_point)), step)  # Generate even powers from 0 to -24
+        step += 1
+    ticks = [10**p for p in even_powers]
+    ticks.append(0)
+    tick_labels = [f'$10^{{{p}}}$' for p in even_powers]
+    tick_labels.append('0')
+    ax.set_yticks(ticks)
+    ax.set_yticklabels(tick_labels)
+
     text = ax.text(
         0.98, 0.95,                   # Position (x, y) in axes coordinates
         name,                         # The text content
@@ -142,6 +177,7 @@ def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
     )
     text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
     ax.grid(True)
+
 
 def rosen_visualization():
 
@@ -194,9 +230,6 @@ if __name__ == "__main__":
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
         print(f"Folder '{folder_name}' created.")
-
-    rosen_visualization()
-    exit()
 
     algorithm_list = [
             "torch.optim.SGD",
@@ -399,12 +432,12 @@ if __name__ == "__main__":
         plot_loss("Adagrad_1.0_optimtrack", ax[1], name="Init. cond. dep.: 500 AdaGrad real., b=1", n_trajectories=500, linthresh=10e-25)
         plot_loss("Adam_1.0_optimtrack", ax[2], name="Stable oscillations: 5 Adam real., b=1", n_trajectories=5, linthresh=10e-6)
         plot_loss("Yogi_100.0_optimtrack", ax[3], name="Mixed behavior: 500 Yogi real., b=100", n_trajectories=500, linthresh=10e-5)
-        # TODO: change the y axis for Adagrad
+
         plt.tight_layout(pad=0.1)
         plt.savefig("img/Smart_plot_3.pdf")
         plt.close()
 
-    if True:
+    if False:
         fig, ax = plt.subplots(3, 2, figsize=(8, 12))
         n_traj = 200
         plot_portrait("AdaBound_1.0_optimtrack", ax[0, 0], name="AdaBound: b=1.0", n_trajectories=n_traj)
@@ -488,3 +521,45 @@ if __name__ == "__main__":
         plt.savefig("img/Smart_plot_6.pdf", format="pdf", dpi=300)
         plt.close()
         
+    if True:
+        fig, ax = plt.subplots(4, 4, figsize=(12, 12))
+        n_traj = 200
+        A = ('Asymptotic', 'tab:orange')
+        M = ('Mixed', 'tab:green')
+        O = ('Oscillating', 'tab:purple')
+        labels = {
+            'AdaBound: b=1':A,
+            'AdaBound: b=10':A,
+            'AdaBound: b=100':A,
+            'AdaBound: b=1000':A,
+
+            'QHAdam: b=1':M,
+            'QHAdam: b=10':O,
+            'QHAdam: b=100':A,
+            'QHAdam: b=1000':A,
+
+            'MADGRAD: b=1':M,
+            'MADGRAD: b=10':M,
+            'MADGRAD: b=100':M,
+            'MADGRAD: b=1000':M,
+
+            'Adam: b=1':O,
+            'Adam: b=10':O,
+            'Adam: b=100':O,
+            'Adam: b=1000':O,
+        }
+        for i in range(4):
+            for j, Algorithm in enumerate(['AdaBound', 'QHAdam', 'MADGRAD', 'Adam']):
+                plot_portrait(
+                    f'{Algorithm}_{10**i}.0_optimtrack', 
+                    ax[j, i], 
+                    name=f'{Algorithm}: b={10**i}', 
+                    n_trajectories=n_traj,
+                    left = True if i == 0 else False,
+                    bottom = True if j == 3 else False,         
+                    description=labels[f'{Algorithm}: b={10**i}']           
+                )
+
+        plt.tight_layout(pad=0.1)
+        plt.savefig("img/Smart_plot_7.pdf", dpi=300)
+        plt.close()
