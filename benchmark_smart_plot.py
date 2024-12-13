@@ -522,11 +522,12 @@ if __name__ == "__main__":
         plt.close()
         
     if True:
-        fig, ax = plt.subplots(4, 4, figsize=(12, 12))
+        fig, ax = plt.subplots(5, 4, figsize=(12, 15))
         n_traj = 200
         A = ('Asymptotic', 'tab:orange')
         M = ('Mixed', 'tab:green')
         O = ('Oscillating', 'tab:purple')
+        D = ('Dependent', 'tab:pink')
         labels = {
             'AdaBound: b=1':A,
             'AdaBound: b=10':A,
@@ -547,16 +548,21 @@ if __name__ == "__main__":
             'Adam: b=10':O,
             'Adam: b=100':O,
             'Adam: b=1000':O,
+
+            'Yogi: b=1':D,
+            'Yogi: b=10':D,
+            'Yogi: b=100':M,
+            'Yogi: b=1000':M,
         }
         for i in range(4):
-            for j, Algorithm in enumerate(['AdaBound', 'QHAdam', 'MADGRAD', 'Adam']):
+            for j, Algorithm in enumerate(['AdaBound', 'Yogi', 'QHAdam', 'MADGRAD', 'Adam']):
                 plot_portrait(
                     f'{Algorithm}_{10**i}.0_optimtrack', 
                     ax[j, i], 
                     name=f'{Algorithm}: b={10**i}', 
                     n_trajectories=n_traj,
                     left = True if i == 0 else False,
-                    bottom = True if j == 3 else False,         
+                    bottom = True if j == 4 else False,         
                     description=labels[f'{Algorithm}: b={10**i}']           
                 )
 
