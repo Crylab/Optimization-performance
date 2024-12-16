@@ -12,7 +12,7 @@ from matplotlib.colors import LogNorm
 
 viridis = plt.get_cmap()
 
-def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', show_increase=True, low_labels = False):
+def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', show_increase=True, low_labels = False, reverse=True):
     """
     Plots a horizontal bar chart on the provided AxesSubplot (ax) with a log-scaled x-axis.
     
@@ -21,7 +21,7 @@ def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', s
         ax (AxesSubplot): Matplotlib AxesSubplot object to draw the chart on.
     """
     # Sort the data by values
-    sorted_data = dict(sorted(data.items(), key=lambda item: item[1], reverse=True))
+    sorted_data = dict(sorted(data.items(), key=lambda item: item[1], reverse=reverse))
     
     # Generate positions and colors
     categories = list(sorted_data.keys())
@@ -300,6 +300,12 @@ if __name__ == "__main__":
                 plot_horizontal_bar_chart(plot_data, ax[n_plot], compare_data=data_compare_with, xlabel=f'Averaged integral metric of\n Rosenbrock parameter {rosen_list[n_plot]}\n with respect to {rosen_list[n_plot-1]}')
                 data_compare_with = plot_data.copy()
 
+        # Axis failed in ax[0]
+        ticks = [3.0, 4.0, 5.0, 6.0, 7.0, 10.0, 20.0]
+        tick_labels = ['3', '4', '5', '', '7', '10', '20'] 
+        ax[0].set_xticks(ticks)
+        ax[0].axes.xaxis.set_ticklabels(tick_labels)
+
         # Adjust layout and show
         plt.tight_layout()
         plt.savefig("img/Smart_plot_1.pdf", format="pdf", dpi=300)
@@ -491,7 +497,7 @@ if __name__ == "__main__":
         plt.savefig(f'img/APNDX_{j}.png', format="png", dpi=300)
         plt.close()
 
-    if False:
+    if True:
         learning_rate = 0.001
         dict_acc = {}
         dict_auc = {}
@@ -510,7 +516,8 @@ if __name__ == "__main__":
         ### PLOTTING
         fig, ax = plt.subplots(1, 2, figsize=(6, 6))
         plot_horizontal_bar_chart(dict_acc, ax[0],
-                                  xlabel="Recognition accuracy, %")
+                                  xlabel="Recognition accuracy, %",
+                                  reverse=False)
         plot_horizontal_bar_chart(dict_auc, ax[1],
                                   xlabel="Averaged integral metric \nof ResNet-18 training")
         # Adjust layout and show
@@ -521,7 +528,7 @@ if __name__ == "__main__":
         plt.savefig("img/Smart_plot_6.pdf", format="pdf", dpi=300)
         plt.close()
         
-    if True:
+    if False:
         fig, ax = plt.subplots(5, 4, figsize=(12, 15))
         n_traj = 200
         A = ('Asymptotic', 'tab:orange')
