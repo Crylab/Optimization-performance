@@ -12,7 +12,7 @@ from matplotlib.colors import LogNorm
 
 viridis = plt.get_cmap()
 
-def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', show_increase=True, low_labels = False, reverse=True):
+def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', show_increase=True, low_labels = False, reverse=True, red=True):
     """
     Plots a horizontal bar chart on the provided AxesSubplot (ax) with a log-scaled x-axis.
     
@@ -56,7 +56,7 @@ def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', s
 
         ax.barh(categories, error_values, color=color_smart, height=1.0)    
     else:
-        ax.barh(categories, values, color=color_smart, height=1.0)
+        ax.barh(categories, values, color=error_color_smart if red else color_smart, height=1.0)
     
 
     # Set log scale for the x-axis
@@ -266,7 +266,7 @@ if __name__ == "__main__":
             "optim.QHAdam",
         ]
 
-    if False:
+    if True:
 
         fig, ax = plt.subplots(1, 4, figsize=(12, 6))
 
@@ -302,11 +302,11 @@ if __name__ == "__main__":
 
             # Plot the chart
             if n_plot == 0:
-                plot_horizontal_bar_chart(plot_data, ax[n_plot], xlabel="Averaged integral metric of\n Rosenbrock parameter 1.0")
+                plot_horizontal_bar_chart(plot_data, ax[n_plot], xlabel="AUC, b=1")
                 data_compare_with = plot_data.copy()
             else:
 
-                plot_horizontal_bar_chart(plot_data, ax[n_plot], compare_data=data_compare_with, xlabel=f'Averaged integral metric of\n Rosenbrock parameter {rosen_list[n_plot]}\n with respect to {rosen_list[n_plot-1]}')
+                plot_horizontal_bar_chart(plot_data, ax[n_plot], compare_data=data_compare_with, xlabel=f'AUC, b={rosen_list[n_plot][:-2]}\n with respect to b={rosen_list[n_plot-1][:-2]}')
                 data_compare_with = plot_data.copy()
 
         # Axis failed in ax[0]
@@ -361,7 +361,7 @@ if __name__ == "__main__":
             ###############################
             # Plot the chart
             if n_plot == 3:
-                plot_horizontal_bar_chart(plot_data_without, ax[n_plot], xlabel="Averaged integral metric of\n Rosenbrock parameter 1000.0")
+                plot_horizontal_bar_chart(plot_data_without, ax[n_plot], xlabel="AUC, b=1000", red=False)
                 continue
             parallel_task = []
             for each in algorithm_list:
@@ -389,7 +389,7 @@ if __name__ == "__main__":
                 nice_label = each.replace("optim.", "").replace("torch.", "")
                 plot_data_without[nice_label] = results[i]
    
-            plot_horizontal_bar_chart(plot_data_without, ax[n_plot], compare_data=plot_data, xlabel=f'Averaged integral metric of\n Rosenbrock parameter {rosen_list[n_plot]}', low_labels = True)
+            plot_horizontal_bar_chart(plot_data_without, ax[n_plot], compare_data=plot_data, xlabel=f'AUC, b={rosen_list[n_plot][:-2]}', low_labels = True)
                 
 
         # Adjust layout and show
