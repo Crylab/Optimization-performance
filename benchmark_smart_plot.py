@@ -212,12 +212,21 @@ def rosen_visualization():
         # Plot the first surface on the first axis
         surf = smart_ax.plot_surface(X, Y, Z, cmap='viridis', norm=norm)
 
-        smart_ax.set_title(f'Rosenbrock function with b={b_list[i]} \n $f(x, y) = (1 - x)^2 + {b_list[i]}(y - x^2)^2$')
+        #smart_ax.set_title(f'Rosenbrock function with b={b_list[i]} \n $f(x, y) = (1 - x)^2 + {b_list[i]}(y - x^2)^2$')
         smart_ax.set_xlabel('X')
         smart_ax.set_ylabel('Y')
         smart_ax.set_zlabel('f(x, y)')
         smart_ax.view_init(elev=30, azim=60)  # Adjust the view angle for this subplot
         fig.colorbar(surf, ax=smart_ax)
+        smart_ax.text(
+            5.0, 1.0, 0.0,                  # Position (x, y) in axes coordinates
+            s = f'b={10**i}',                         # The text content
+            fontsize=20,                  # Font size
+            #ha='left', va='top',         # Align the text
+            #transform=smart_ax.transAxes,       # Use the current axes' coordinate system
+            alpha=0.9,
+        ).set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
+
 
     # Display the plot
     plt.tight_layout()
@@ -497,7 +506,7 @@ if __name__ == "__main__":
         plt.savefig(f'img/APNDX_{j}.png', format="png", dpi=300)
         plt.close()
 
-    if True:
+    if False:
         learning_rate = 0.001
         dict_acc = {}
         dict_auc = {}
