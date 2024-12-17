@@ -302,11 +302,31 @@ if __name__ == "__main__":
 
             # Plot the chart
             if n_plot == 0:
-                plot_horizontal_bar_chart(plot_data, ax[n_plot], xlabel="AUC, b=1")
+                plot_horizontal_bar_chart(plot_data, ax[n_plot], xlabel="Area under the curve")
+                text = ax[n_plot].text(
+                    0.95, 0.98,                   # Position (x, y) in axes coordinates
+                    f'b={b[:-2]}',                         # The text content
+                    fontsize=14,                  # Font size
+                    ha='right', va='top',         # Align the text
+                    transform=ax[n_plot].transAxes,       # Use the current axes' coordinate system
+                    color='black',
+                    alpha=1,
+                )
+                text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
                 data_compare_with = plot_data.copy()
             else:
 
-                plot_horizontal_bar_chart(plot_data, ax[n_plot], compare_data=data_compare_with, xlabel=f'AUC, b={rosen_list[n_plot][:-2]}\n with respect to b={rosen_list[n_plot-1][:-2]}')
+                plot_horizontal_bar_chart(plot_data, ax[n_plot], compare_data=data_compare_with, xlabel=f'Area under the curve')
+                text = ax[n_plot].text(
+                    0.95, 0.98,                   # Position (x, y) in axes coordinates
+                    f'b={b[:-2]}',                         # The text content
+                    fontsize=14,                  # Font size
+                    ha='right', va='top',         # Align the text
+                    transform=ax[n_plot].transAxes,       # Use the current axes' coordinate system
+                    color='black',
+                    alpha=1,
+                )
+                text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
                 data_compare_with = plot_data.copy()
 
         # Axis failed in ax[0]
@@ -320,7 +340,7 @@ if __name__ == "__main__":
         plt.savefig("img/Smart_plot_1.pdf", format="pdf", dpi=300)
         plt.close()
 
-    if False:
+    if True:
 
         fig, ax = plt.subplots(1, 4, figsize=(12, 6))
 
@@ -361,7 +381,17 @@ if __name__ == "__main__":
             ###############################
             # Plot the chart
             if n_plot == 3:
-                plot_horizontal_bar_chart(plot_data_without, ax[n_plot], xlabel="AUC, b=1000", red=False)
+                plot_horizontal_bar_chart(plot_data, ax[n_plot], xlabel="Area under the curve", red=False)
+                text = ax[n_plot].text(
+                    0.95, 0.98,                   # Position (x, y) in axes coordinates
+                    f'b={b[:-2]}',                         # The text content
+                    fontsize=14,                  # Font size
+                    ha='right', va='top',         # Align the text
+                    transform=ax[n_plot].transAxes,       # Use the current axes' coordinate system
+                    color='black',
+                    alpha=1,
+                )
+                text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
                 continue
             parallel_task = []
             for each in algorithm_list:
@@ -389,8 +419,17 @@ if __name__ == "__main__":
                 nice_label = each.replace("optim.", "").replace("torch.", "")
                 plot_data_without[nice_label] = results[i]
    
-            plot_horizontal_bar_chart(plot_data_without, ax[n_plot], compare_data=plot_data, xlabel=f'AUC, b={rosen_list[n_plot][:-2]}', low_labels = True)
-                
+            plot_horizontal_bar_chart(plot_data_without, ax[n_plot], compare_data=plot_data, xlabel=f'Area under the curve', low_labels = True)
+            text = ax[n_plot].text(
+                0.95, 0.98,                   # Position (x, y) in axes coordinates
+                f'b={b[:-2]}',                         # The text content
+                fontsize=14,                  # Font size
+                ha='right', va='top',         # Align the text
+                transform=ax[n_plot].transAxes,       # Use the current axes' coordinate system
+                color='black',
+                alpha=1,
+            )
+            text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
 
         # Adjust layout and show
         plt.tight_layout()
