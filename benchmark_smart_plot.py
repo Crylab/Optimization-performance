@@ -12,7 +12,7 @@ from matplotlib.colors import LogNorm
 
 viridis = plt.get_cmap()
 
-def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', show_increase=True, low_labels = False, reverse=True, red=True):
+def plot_horizontal_bar_chart(data, ax, xlabel='X label', reverse=True, red=True):
     """
     Plots a horizontal bar chart on the provided AxesSubplot (ax) with a log-scaled x-axis.
     
@@ -39,25 +39,56 @@ def plot_horizontal_bar_chart(data, ax, compare_data = None, xlabel='X label', s
         error_color_smart.append(error_colors[i])
         error_color_smart.append(error_colors[i+half])
 
-    
-    if compare_data:
-        # Plot horizontal bars
-        ax.barh(categories, values, color=error_color_smart, height=1.0)
-        
-        error_values = []
-        for ii, each in enumerate(categories):
-            error_values.append(compare_data[each])
-            diff = (data[each]-compare_data[each])/compare_data[each]
-            if show_increase:
-                if diff < 1.0 and low_labels:
-                    ax.text(values[ii]*2 if diff > 0 else error_values[ii]*2, ii-0.25, f'{diff*100:.0f}%', ha='center')
-                else:
-                    ax.text(values[ii]*0.5 if diff < 11 else values[ii]*0.35, ii-0.25, f'×{diff:.2f}', ha='center')
+    ax.barh(categories, values, color=error_color_smart if red else color_smart, height=1.0)    
 
-        ax.barh(categories, error_values, color=color_smart, height=1.0)    
-    else:
-        ax.barh(categories, values, color=error_color_smart if red else color_smart, height=1.0)
+    # Set log scale for the x-axis
+    ax.set_xscale("log")
+    ax.set_ylim((-0.5, len(categories)-0.5))
+    ax.set_xlabel(xlabel)
+    ax.grid(True, linestyle='--', linewidth=0.7, color='gray', alpha=0.7)
+
+def plot_horizontal_bar_chart_compare(data, ax, compare_data, xlabel='X label', reverse=True):
+    """
+    Plots a horizontal bar chart on the provided AxesSubplot (ax) with a log-scaled x-axis.
     
+    Parameters:
+        data (dict): Dictionary where keys are categories (str) and values are corresponding numeric values.
+        ax (AxesSubplot): Matplotlib AxesSubplot object to draw the chart on.
+    """
+    # Sort the data by max values
+    max_dict = {key: max(data[key], compare_data[key]) for key in data}
+    categories = sorted(max_dict, key=max_dict.get, reverse=reverse)  # Sort by values
+    
+    # Generate positions and colors
+    values = [data[key] for key in categories]
+    error_values = [compare_data[key] for key in categories]
+    max_values = [max_dict[key] for key in categories]
+    num_categories = len(categories)+2
+    colors = cm.viridis(np.linspace(0.0, 1.0, num_categories))
+    error_colors = cm.magma(np.linspace(0.5, 1.0, num_categories))
+
+    color_smart = []
+    error_color_smart = []
+    half = int((len(categories)+1)/2)
+    for i in range(half):
+        color_smart.append(colors[i])
+        color_smart.append(colors[i+half])
+        error_color_smart.append(error_colors[i])
+        error_color_smart.append(error_colors[i+half])
+
+    ax.barh(categories, values, color=error_color_smart, height=1.0)
+    ax.barh(categories, error_values, color=color_smart, height=1.0)
+
+    max_value = max(max_values)
+
+    for ii, each in enumerate(categories):
+        diff = data[each]-compare_data[each]   
+        ratio = data[each]/compare_data[each]
+        if diff/max_value>0.02:
+            ax.text(max_values[ii]*0.9, ii-0.25, f'×{ratio:.2f}', ha='right')
+        else:
+            ax.text(max_values[ii], ii-0.25, f'×{ratio:.2f}', ha='left')
+
 
     # Set log scale for the x-axis
     ax.set_xscale("log")
@@ -316,7 +347,7 @@ if __name__ == "__main__":
                 data_compare_with = plot_data.copy()
             else:
 
-                plot_horizontal_bar_chart(plot_data, ax[n_plot], compare_data=data_compare_with, xlabel=f'Area under the curve')
+                plot_horizontal_bar_chart_compare(plot_data, ax[n_plot], compare_data=data_compare_with, xlabel=f'Area under the curve')
                 text = ax[n_plot].text(
                     0.95, 0.98,                   # Position (x, y) in axes coordinates
                     f'b={b[:-2]}',                         # The text content
@@ -419,7 +450,7 @@ if __name__ == "__main__":
                 nice_label = each.replace("optim.", "").replace("torch.", "")
                 plot_data_without[nice_label] = results[i]
    
-            plot_horizontal_bar_chart(plot_data_without, ax[n_plot], compare_data=plot_data, xlabel=f'Area under the curve', low_labels = True)
+            plot_horizontal_bar_chart_compare(plot_data_without, ax[n_plot], compare_data=plot_data, xlabel="Area under the curve")
             text = ax[n_plot].text(
                 0.95, 0.98,                   # Position (x, y) in axes coordinates
                 f'b={b[:-2]}',                         # The text content
@@ -436,7 +467,7 @@ if __name__ == "__main__":
         plt.savefig("img/Smart_plot_11.pdf", format="pdf", dpi=300)
         plt.close()
 
-    if True:
+    if False:
 
         fig, ax = plt.subplots(figsize=(4, 6))
 
