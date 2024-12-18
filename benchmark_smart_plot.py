@@ -266,7 +266,7 @@ if __name__ == "__main__":
             "optim.QHAdam",
         ]
 
-    if True:
+    if False:
 
         fig, ax = plt.subplots(1, 4, figsize=(12, 6))
 
@@ -340,7 +340,7 @@ if __name__ == "__main__":
         plt.savefig("img/Smart_plot_1.pdf", format="pdf", dpi=300)
         plt.close()
 
-    if True:
+    if False:
 
         fig, ax = plt.subplots(1, 4, figsize=(12, 6))
 
@@ -436,9 +436,9 @@ if __name__ == "__main__":
         plt.savefig("img/Smart_plot_11.pdf", format="pdf", dpi=300)
         plt.close()
 
-    if False:
+    if True:
 
-        fig, ax = plt.subplots(1, 2, figsize=(6, 6))
+        fig, ax = plt.subplots(figsize=(4, 6))
 
         # Start to generate charts
         rosen_list = ['1000.0', '100.0', '10.0', '1.0']
@@ -469,10 +469,10 @@ if __name__ == "__main__":
             max_dict[key] = max_val
             relative_dict[key] = max_val/min_val
 
-        plot_horizontal_bar_chart(plot_1000, ax[0],
-                                  xlabel="Optimized learning rate for \n Rosenbrock function b=1000.0")
-        plot_horizontal_bar_chart(relative_dict, ax[1],
-                                  xlabel="Ratio of maximum and \nminimum values of \nlearning rate")
+        #plot_horizontal_bar_chart(plot_1000, ax[0],
+        #                          xlabel="Optimized learning rate for \n Rosenbrock function b=1000.0")
+        plot_horizontal_bar_chart(relative_dict, ax,
+                                  xlabel="Ratio between maximum \nand minimum global LRs", red=False)
 
         # Adjust layout and show
         plt.tight_layout()
@@ -480,7 +480,7 @@ if __name__ == "__main__":
         plt.close()
    
     if False:
-        fig, ax = plt.subplots(4, 1, figsize=(6, 12))
+        fig, ax = plt.subplots(4, 1, figsize=(7, 12))
         # n_traj = 100
         plot_loss("SGD_1.0_optimtrack", ax[0], name="Asymp. convergence: 100 SGD real., b=1", n_trajectories=100, linthresh=10e-16)
         plot_loss("Adagrad_1.0_optimtrack", ax[1], name="Init. cond. dep.: 500 AdaGrad real., b=1", n_trajectories=500, linthresh=10e-25)
