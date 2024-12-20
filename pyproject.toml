@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "paper-2023-optimization-survey-code"
+name = "Optimization-performance"
 version = "0.1.0"
 description = "The repository content the code to reproduce charts of the paper"
 authors = ["Ruslan Shaiakhmetov"]
