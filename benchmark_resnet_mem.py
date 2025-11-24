@@ -5,13 +5,11 @@ import torch_optimizer as optim
 from torchvision import datasets, transforms, models
 from torch.utils.data import DataLoader
 import numpy as np
-from multiprocessing import Pool
-import multiprocessing
 import json
 import os.path
 import os
 from itertools import islice
-from torch.profiler import profile, record_function, ProfilerActivity
+import time
 
 
 def get_memory_usage():
@@ -45,7 +43,6 @@ def train_resnet_cifar10(command):
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
     # Hyperparameters
-    num_epochs = 5
     batch_size = 128
 
     # Transformations
@@ -75,6 +72,7 @@ def train_resnet_cifar10(command):
     model.train()
     running_loss = 0.0
     memory_usage_list = []
+    exec_time_list = []
     
     for inputs, labels in islice(train_loader, 100):  # Limiting to first 100 batches for memory benchmarking
         inputs, labels = inputs.to(device), labels.to(device)
@@ -87,11 +85,15 @@ def train_resnet_cifar10(command):
         loss = criterion(outputs, labels)
         loss.backward()
         memory_usage_list.append(get_memory_usage())
+        start_time = time.time()
         optimizer.step()
+        end_time = time.time()
+        elapsed_time = end_time - start_time
+        exec_time_list.append(elapsed_time)
 
         running_loss += loss.item()
 
-    return np.average(memory_usage_list)
+    return np.average(memory_usage_list), np.average(exec_time_list)
 
 if __name__ == "__main__":
     is_parallel = False
@@ -137,11 +139,17 @@ if __name__ == "__main__":
         task_list.append((result, ))
 
     overall_memory_usage = []
+    overall_exec_time = []
     
     for task in task_list:
-        memory_usage = train_resnet_cifar10(*task)
+        memory_usage, exec_time = train_resnet_cifar10(*task)
         overall_memory_usage.append(memory_usage)
+        overall_exec_time.append(exec_time)
         print(f"Memory usage for {task}: {memory_usage} MB")
+        print(f"Execution time for {task}: {exec_time} seconds")
 
     with open(f'data_ResNet_mem/ResNet_memory.json', "w") as json_file:
         json.dump(overall_memory_usage, json_file, indent=4)
+
+    with open(f'data_ResNet_mem/ResNet_exec_time.json', "w") as json_file:
+        json.dump(overall_exec_time, json_file, indent=4)

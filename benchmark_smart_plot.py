@@ -581,6 +581,7 @@ if __name__ == "__main__":
         dict_acc = {}
         dict_auc = {}
         dict_mem = {}
+        dict_time = {}
         with open(f'data_ResNet_mem/ResNet_memory.json', "r") as json_file:
             data = json.load(json_file)
             for Algorithm in algorithm_list:
@@ -591,6 +592,18 @@ if __name__ == "__main__":
                     result = Algorithm + "(model.parameters(), lr=" + str(learning_rate) + ")"
                 nice_label = Algorithm.replace("optim.", "").replace("torch.", "")
                 dict_mem[nice_label] = data.pop()
+
+        with open(f'data_ResNet_mem/ResNet_exec_time.json', "r") as json_file:
+            data = json.load(json_file)
+            for Algorithm in algorithm_list:
+                if Algorithm == "torch.optim.SGDW": continue
+                if "torch.optim.AMSgrad" == Algorithm:
+                    result = "torch.optim.Adam(model.parameters(), lr=" + str(learning_rate) + ", amsgrad=True)"
+                else:
+                    result = Algorithm + "(model.parameters(), lr=" + str(learning_rate) + ")"
+                nice_label = Algorithm.replace("optim.", "").replace("torch.", "")
+                dict_time[nice_label] = data.pop() * 1000.0  # to ms
+
         for Algorithm in algorithm_list:
             if Algorithm == "torch.optim.SGDW": continue
             if "torch.optim.AMSgrad" == Algorithm:
@@ -604,7 +617,7 @@ if __name__ == "__main__":
                 dict_auc[nice_label] = sum(data["Optimization_path"])/100
 
         ### PLOTTING
-        fig, ax = plt.subplots(1, 3, figsize=(9, 6))
+        fig, ax = plt.subplots(1, 4, figsize=(12, 6))
         plot_horizontal_bar_chart(dict_acc, ax[0],
                                   xlabel="Recognition accuracy, %",
                                   reverse=False,
@@ -615,12 +628,16 @@ if __name__ == "__main__":
         plot_horizontal_bar_chart(dict_mem, ax[2],
                                   xlabel="Memory usage per batch, MB",
                                   red=False)
+        plot_horizontal_bar_chart(dict_time, ax[3],
+                                  xlabel="Execution time per batch, ms",
+                                  red=False)
         # Adjust layout and show
         ax[0].set_xscale("linear")
         ax[1].set_xscale("linear")
         ax[2].set_xscale("linear")
+        ax[3].set_xscale("linear")
         ax[0].set_xlim((50, 90))
-        ax[2].set_xlim((300, 700))
+        ax[2].set_xlim((200, 600))
         plt.tight_layout()
         plt.savefig("img/Smart_plot_6.pdf", format="pdf", dpi=300)
         plt.close()
