@@ -209,6 +209,58 @@ def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
     text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
     ax.grid(True)
 
+def plot_average_loss(file_name, ax, color = "blue", n_trajectories=1000, name='', linthresh=10e-8):
+    # Load JSON file
+    with open("data/" + file_name + ".json", "r") as json_file:
+        data = json.load(json_file)
+
+    collected_trajectories = []
+    i = 0
+    max_point = -np.inf
+    min_point = np.inf
+
+    # 1. Iterate and Collect
+    for key, points in data.items():
+        # Check constraints
+        if "loss" in key and i < n_trajectories and not any(point > 10**10 for point in points):
+            collected_trajectories.append(points)
+            i += 1
+            max_point = max(points) if max(points) > max_point else max_point
+            min_point = min(points) if min(points) < max_point else min_point
+
+    # 2. Calculate Average
+    if collected_trajectories:
+        # Convert list of lists to a 2D NumPy array
+        # Shape becomes (n_trajectories, n_timesteps)
+        data_matrix = np.array(collected_trajectories)
+        
+        # Calculate mean along axis 0 (vertical average across trajectories)
+        mean_trajectory = np.mean(data_matrix, axis=0)
+
+        # 3. Plot Once
+        ax.plot(mean_trajectory, color=color, linewidth=2.0, label=name)
+        
+        # Optional: Set limits based on the average
+        # ax.set_ylim(np.min(mean_trajectory), np.max(mean_trajectory))
+
+    ax.set_xlabel("Iterations")
+    ax.set_ylabel("Loss value")
+    ax.set_ylim((0, None))
+    ax.set_xlim((0, 1000))
+    ax.set_yscale('symlog', linthresh=linthresh)
+
+    even_powers = range(int(np.log10(linthresh)), int(np.log10(max_point)))  # Generate even powers from 0 to -24
+    step = 2
+    while len(even_powers) > 10:
+        even_powers = range(int(np.log10(linthresh)), int(np.log10(max_point)), step)  # Generate even powers from 0 to -24
+        step += 1
+    ticks = [10**p for p in even_powers]
+    ticks.append(0)
+    tick_labels = [f'$10^{{{p}}}$' for p in even_powers]
+    tick_labels.append('0')
+    ax.set_yticks(ticks)
+    ax.set_yticklabels(tick_labels)
+
 
 def rosen_visualization():
 
@@ -576,7 +628,7 @@ if __name__ == "__main__":
         plt.savefig(f'img/APNDX_{j}.png', format="png", dpi=300)
         plt.close()
 
-    if True:
+    if False:
         learning_rate = 0.001
         dict_acc = {}
         dict_auc = {}
@@ -629,7 +681,7 @@ if __name__ == "__main__":
                                   xlabel="Memory usage per batch, MB",
                                   red=False)
         plot_horizontal_bar_chart(dict_time, ax[3],
-                                  xlabel="Execution time per batch, ms",
+                                  xlabel="Execution time per step, ms",
                                   red=False)
         # Adjust layout and show
         ax[0].set_xscale("linear")
@@ -690,3 +742,36 @@ if __name__ == "__main__":
         plt.tight_layout(pad=0.1)
         plt.savefig("img/Smart_plot_7.pdf", dpi=300)
         plt.close()
+
+    if True:
+            fig, ax = plt.subplots(1, 1, figsize=(7, 12))
+            # n_traj = 100
+            plot_average_loss("AdaBound_1.0_optimtrack",    ax, color=cm.viridis(1/22.0), name="AdaBound")
+            plot_average_loss("Adagrad_1.0_optimtrack",     ax, color=cm.viridis(2/22.0), name="Adagrad")
+            plot_average_loss("Adam_1.0_optimtrack",        ax, color=cm.viridis(3/22.0), name="Adam")
+            plot_average_loss("Adamax_1.0_optimtrack",      ax, color=cm.viridis(4/22.0), name="Adamax")
+            plot_average_loss("AdaMod_1.0_optimtrack",      ax, color=cm.viridis(5/22.0), name="AdaMod")
+            plot_average_loss("AdamP_1.0_optimtrack",       ax, color=cm.viridis(6/22.0), name="AdamP")
+            plot_average_loss("AdamW_1.0_optimtrack",       ax, color=cm.viridis(7/22.0), name="AdamW")
+            plot_average_loss("AggMo_1.0_optimtrack",       ax, color=cm.viridis(8/22.0), name="AggMo")
+            plot_average_loss("AMSgrad_1.0_optimtrack",     ax, color=cm.viridis(9/22.0), name="AMSgrad")
+            plot_average_loss("DiffGrad_1.0_optimtrack",    ax, color=cm.viridis(10/22.0), name="DiffGrad")
+            plot_average_loss("Lamb_1.0_optimtrack",        ax, color=cm.viridis(11/22.0), name="Lamb")
+            plot_average_loss("NAdam_1.0_optimtrack",       ax, color=cm.viridis(12/22.0), name="NAdam")
+            plot_average_loss("NovoGrad_1.0_optimtrack",    ax, color=cm.viridis(13/22.0), name="NovoGrad")
+            plot_average_loss("PID_1.0_optimtrack",         ax, color=cm.viridis(14/22.0), name="PID")
+            plot_average_loss("QHAdam_1.0_optimtrack",      ax, color=cm.viridis(15/22.0), name="QHAdam")
+            plot_average_loss("RAdam_1.0_optimtrack",       ax, color=cm.viridis(16/22.0), name="RAdam")
+            plot_average_loss("RMSprop_1.0_optimtrack",     ax, color=cm.viridis(17/22.0), name="RMSprop")
+            plot_average_loss("Rprop_1.0_optimtrack",       ax, color=cm.viridis(18/22.0), name="Rprop")
+            plot_average_loss("SGD_1.0_optimtrack",         ax, color=cm.viridis(19/22.0), name="SGD")
+            plot_average_loss("SGDW_1.0_optimtrack",        ax, color=cm.viridis(20/22.0), name="SGDW")
+            plot_average_loss("SWATS_1.0_optimtrack",       ax, color=cm.viridis(21/22.0), name="SWATS")
+            plot_average_loss("Yogi_1.0_optimtrack",        ax, color=cm.viridis(22/22.0), name="Yogi")
+
+
+            plt.tight_layout(pad=0.1)
+            plt.legend(ncol=3, loc='upper right')
+            plt.grid(True)
+            plt.savefig("img/Smart_plot_31.pdf")
+            plt.close()
