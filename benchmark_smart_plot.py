@@ -12,7 +12,7 @@ from matplotlib.colors import LogNorm
 
 viridis = plt.get_cmap()
 
-markers = [
+markers_list = [
     '.', ',', 'o', 'v', '^', '<', '>',   # point, pixel, circle, tri_down/up/left/right
     '1', '2', '3', '4',                 # tri markers (down, up, left, right)
     's', 'p', '*',                      # square, pentagon, star
@@ -255,7 +255,7 @@ def plot_average_loss(file_name, ax, color = "blue", n_trajectories=1000, name='
 
         # 3. Plot Once
         if markers:
-            ax.plot(mean_trajectory, color=color, marker=markers.pop(), markevery=50, linewidth=2.0, label=name)
+            ax.plot(mean_trajectory, color=color, marker=markers_list.pop(), markevery=50, linewidth=2.0, label=name)
         else:
             ax.plot(mean_trajectory, color=color, linewidth=2.0, label=name)
         
@@ -765,20 +765,21 @@ if __name__ == "__main__":
         plt.savefig("img/Smart_plot_7.pdf", dpi=300)
         plt.close()
 
-    if False:
+    if True:
             fig, ax = plt.subplots(1, 1, figsize=(6, 6))
             # n_traj = 100
-            plot_average_loss("AdaBound_1.0_optimtrack",    ax, min_trajectory=True, markers=True, color=cm.viridis(1/22.0), name="AdaBound")
-            plot_average_loss("Adagrad_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(2/22.0), name="Adagrad")
-            plot_average_loss("Adam_1.0_optimtrack",        ax, min_trajectory=True, markers=True, color=cm.viridis(3/22.0), name="Adam")
-            plot_average_loss("Adamax_1.0_optimtrack",      ax, min_trajectory=True, markers=True, color=cm.viridis(4/22.0), name="Adamax")
-            plot_average_loss("AdaMod_1.0_optimtrack",      ax, min_trajectory=True, markers=True, color=cm.viridis(5/22.0), name="AdaMod")
-            plot_average_loss("AdamP_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(6/22.0), name="AdamP")
-            plot_average_loss("AdamW_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(7/22.0), name="AdamW")
-            plot_average_loss("AggMo_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(8/22.0), name="AggMo")
-            plot_average_loss("AMSgrad_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(9/22.0), name="AMSgrad")
-            plot_average_loss("DiffGrad_1.0_optimtrack",    ax, min_trajectory=True, markers=True, color=cm.viridis(10/22.0), name="DiffGrad")
-            plot_average_loss("Lamb_1.0_optimtrack",        ax, min_trajectory=True, markers=True, color=cm.viridis(11/22.0), name="Lamb")
+            plot_average_loss("AdaBound_1.0_optimtrack",    ax, min_trajectory=True, markers=True, color=cm.viridis(0/22.0), name="AdaBound")
+            plot_average_loss("Adagrad_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(1/22.0), name="Adagrad")
+            plot_average_loss("Adam_1.0_optimtrack",        ax, min_trajectory=True, markers=True, color=cm.viridis(2/22.0), name="Adam")
+            plot_average_loss("Adamax_1.0_optimtrack",      ax, min_trajectory=True, markers=True, color=cm.viridis(3/22.0), name="Adamax")
+            plot_average_loss("AdaMod_1.0_optimtrack",      ax, min_trajectory=True, markers=True, color=cm.viridis(4/22.0), name="AdaMod")
+            plot_average_loss("AdamP_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(5/22.0), name="AdamP")
+            plot_average_loss("AdamW_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(6/22.0), name="AdamW")
+            plot_average_loss("AggMo_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(7/22.0), name="AggMo")
+            plot_average_loss("AMSgrad_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(8/22.0), name="AMSgrad")
+            plot_average_loss("DiffGrad_1.0_optimtrack",    ax, min_trajectory=True, markers=True, color=cm.viridis(9/22.0), name="DiffGrad")
+            plot_average_loss("Lamb_1.0_optimtrack",        ax, min_trajectory=True, markers=True, color=cm.viridis(10/22.0), name="Lamb")
+            plot_average_loss("MADGRAD_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(11/22.0), name="MADGRAD")
             plot_average_loss("NAdam_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(12/22.0), name="NAdam")
             plot_average_loss("NovoGrad_1.0_optimtrack",    ax, min_trajectory=True, markers=True, color=cm.viridis(13/22.0), name="NovoGrad")
             plot_average_loss("PID_1.0_optimtrack",         ax, min_trajectory=True, markers=True, color=cm.viridis(14/22.0), name="PID")
@@ -798,20 +799,21 @@ if __name__ == "__main__":
             plt.savefig("img/Smart_plot_32.pdf")
             plt.close()
 
-    if True:
+    if False:
             fig, ax = plt.subplots(1, 1, figsize=(6, 6))
             # n_traj = 100
-            plot_average_loss("AdaBound_1.0_optimtrack",    ax, color=cm.viridis(1/22.0), name="AdaBound")
-            plot_average_loss("Adagrad_1.0_optimtrack",     ax, color=cm.viridis(2/22.0), name="Adagrad")
-            plot_average_loss("Adam_1.0_optimtrack",        ax, color=cm.viridis(3/22.0), name="Adam")
-            plot_average_loss("Adamax_1.0_optimtrack",      ax, color=cm.viridis(4/22.0), name="Adamax")
-            plot_average_loss("AdaMod_1.0_optimtrack",      ax, color=cm.viridis(5/22.0), name="AdaMod")
-            plot_average_loss("AdamP_1.0_optimtrack",       ax, color=cm.viridis(6/22.0), name="AdamP")
-            plot_average_loss("AdamW_1.0_optimtrack",       ax, color=cm.viridis(7/22.0), name="AdamW")
-            plot_average_loss("AggMo_1.0_optimtrack",       ax, color=cm.viridis(8/22.0), name="AggMo")
-            plot_average_loss("AMSgrad_1.0_optimtrack",     ax, color=cm.viridis(9/22.0), name="AMSgrad")
-            plot_average_loss("DiffGrad_1.0_optimtrack",    ax, color=cm.viridis(10/22.0), name="DiffGrad")
-            plot_average_loss("Lamb_1.0_optimtrack",        ax, color=cm.viridis(11/22.0), name="Lamb")
+            plot_average_loss("AdaBound_1.0_optimtrack",    ax, color=cm.viridis(0/22.0), name="AdaBound")
+            plot_average_loss("Adagrad_1.0_optimtrack",     ax, color=cm.viridis(1/22.0), name="Adagrad")
+            plot_average_loss("Adam_1.0_optimtrack",        ax, color=cm.viridis(2/22.0), name="Adam")
+            plot_average_loss("Adamax_1.0_optimtrack",      ax, color=cm.viridis(3/22.0), name="Adamax")
+            plot_average_loss("AdaMod_1.0_optimtrack",      ax, color=cm.viridis(4/22.0), name="AdaMod")
+            plot_average_loss("AdamP_1.0_optimtrack",       ax, color=cm.viridis(5/22.0), name="AdamP")
+            plot_average_loss("AdamW_1.0_optimtrack",       ax, color=cm.viridis(6/22.0), name="AdamW")
+            plot_average_loss("AggMo_1.0_optimtrack",       ax, color=cm.viridis(7/22.0), name="AggMo")
+            plot_average_loss("AMSgrad_1.0_optimtrack",     ax, color=cm.viridis(8/22.0), name="AMSgrad")
+            plot_average_loss("DiffGrad_1.0_optimtrack",    ax, color=cm.viridis(9/22.0), name="DiffGrad")
+            plot_average_loss("Lamb_1.0_optimtrack",        ax, color=cm.viridis(10/22.0), name="Lamb")
+            plot_average_loss("MADGRAD_1.0_optimtrack",     ax, color=cm.viridis(11/22.0), name="MADGRAD")
             plot_average_loss("NAdam_1.0_optimtrack",       ax, color=cm.viridis(12/22.0), name="NAdam")
             plot_average_loss("NovoGrad_1.0_optimtrack",    ax, color=cm.viridis(13/22.0), name="NovoGrad")
             plot_average_loss("PID_1.0_optimtrack",         ax, color=cm.viridis(14/22.0), name="PID")
