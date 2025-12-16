@@ -271,34 +271,34 @@ if __name__ == "__main__":
     if not os.path.exists(folder_name):
         os.makedirs(folder_name)
         print(f"Folder '{folder_name}' created.")
-    is_parallel = True
+    is_parallel = False
     optimization_space = generate_optimization_space()
     algorithm_list = [
-        "torch.optim.SGD",
-        "torch.optim.Adagrad",
-        "optim.AggMo",
-        "torch.optim.Rprop",
-        "torch.optim.RMSprop",
-        "torch.optim.Adam",
-        "torch.optim.Adamax",
-        "torch.optim.NAdam",
-        "torch.optim.RAdam",
-        "torch.optim.AMSgrad", 
-        "optim.NovoGrad",
-        "optim.SWATS",
-        "optim.DiffGrad", 
-        "optim.Yogi",
-        "optim.Lamb",
-        "optim.AdamP", 
-        "torch.optim.SGDW", 
-        "torch.optim.AdamW",
-        "optim.AdaMod",
+        #"torch.optim.SGD",
+        #"torch.optim.Adagrad",
+        #"optim.AggMo",
+        #"torch.optim.Rprop",
+        #"torch.optim.RMSprop",
+        #"torch.optim.Adam",
+        #"torch.optim.Adamax",
+        #"torch.optim.NAdam",
+        #"torch.optim.RAdam",
+        #"torch.optim.AMSgrad", 
+        #"optim.NovoGrad",
+        #"optim.SWATS",
+        #"optim.DiffGrad", 
+        #"optim.Yogi",
+        #"optim.Lamb",
+        #"optim.AdamP", 
+        #"torch.optim.SGDW", 
+        #"torch.optim.AdamW",
+        #"optim.AdaMod",
         "optim.MADGRAD",
-        "optim.AdaBound", 
-        "optim.PID",
-        "optim.QHAdam",
+        #"optim.AdaBound", 
+        #"optim.PID",
+        #"optim.QHAdam",
     ]
-    Rosenbrock_list = [1.0, 10.0, 100.0, 1000.0]
+    Rosenbrock_list = [100.0] #, 10.0, 100.0, 1000.0]
 
     task_list = []
     for Algorithm in algorithm_list:

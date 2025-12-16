@@ -221,7 +221,7 @@ def plot_loss(file_name, ax, n_trajectories = 1000, name='', linthresh=10e-8):
     text.set_bbox(dict(facecolor='white', alpha=0.6, edgecolor='gray', boxstyle='round'))
     ax.grid(True)
 
-def plot_average_loss(file_name, ax, color = "blue", n_trajectories=1000, name='', linthresh=10e-5, min_trajectory=False, markers=False):
+def plot_average_loss(file_name, ax, color = "blue", n_trajectories=1000, name='', linthresh=10e-2, min_trajectory=False, markers=False):
     
     # Load JSON file
     with open("data/" + file_name + ".json", "r") as json_file:
@@ -767,68 +767,38 @@ if __name__ == "__main__":
 
     if True:
             fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-            # n_traj = 100
-            plot_average_loss("AdaBound_1.0_optimtrack",    ax, min_trajectory=True, markers=True, color=cm.viridis(0/22.0), name="AdaBound")
-            plot_average_loss("Adagrad_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(1/22.0), name="Adagrad")
-            plot_average_loss("Adam_1.0_optimtrack",        ax, min_trajectory=True, markers=True, color=cm.viridis(2/22.0), name="Adam")
-            plot_average_loss("Adamax_1.0_optimtrack",      ax, min_trajectory=True, markers=True, color=cm.viridis(3/22.0), name="Adamax")
-            plot_average_loss("AdaMod_1.0_optimtrack",      ax, min_trajectory=True, markers=True, color=cm.viridis(4/22.0), name="AdaMod")
-            plot_average_loss("AdamP_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(5/22.0), name="AdamP")
-            plot_average_loss("AdamW_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(6/22.0), name="AdamW")
-            plot_average_loss("AggMo_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(7/22.0), name="AggMo")
-            plot_average_loss("AMSgrad_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(8/22.0), name="AMSgrad")
-            plot_average_loss("DiffGrad_1.0_optimtrack",    ax, min_trajectory=True, markers=True, color=cm.viridis(9/22.0), name="DiffGrad")
-            plot_average_loss("Lamb_1.0_optimtrack",        ax, min_trajectory=True, markers=True, color=cm.viridis(10/22.0), name="Lamb")
-            plot_average_loss("MADGRAD_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(11/22.0), name="MADGRAD")
-            plot_average_loss("NAdam_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(12/22.0), name="NAdam")
-            plot_average_loss("NovoGrad_1.0_optimtrack",    ax, min_trajectory=True, markers=True, color=cm.viridis(13/22.0), name="NovoGrad")
-            plot_average_loss("PID_1.0_optimtrack",         ax, min_trajectory=True, markers=True, color=cm.viridis(14/22.0), name="PID")
-            plot_average_loss("QHAdam_1.0_optimtrack",      ax, min_trajectory=True, markers=True, color=cm.viridis(15/22.0), name="QHAdam")
-            plot_average_loss("RAdam_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(16/22.0), name="RAdam")
-            plot_average_loss("RMSprop_1.0_optimtrack",     ax, min_trajectory=True, markers=True, color=cm.viridis(17/22.0), name="RMSprop")
-            plot_average_loss("Rprop_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(18/22.0), name="Rprop")
-            plot_average_loss("SGD_1.0_optimtrack",         ax, min_trajectory=True, markers=True, color=cm.viridis(19/22.0), name="SGD")
-            plot_average_loss("SGDW_1.0_optimtrack",        ax, min_trajectory=True, markers=True, color=cm.viridis(20/22.0), name="SGDW")
-            plot_average_loss("SWATS_1.0_optimtrack",       ax, min_trajectory=True, markers=True, color=cm.viridis(21/22.0), name="SWATS")
-            plot_average_loss("Yogi_1.0_optimtrack",        ax, min_trajectory=True, markers=True, color=cm.viridis(22/22.0), name="Yogi")
 
-            plt.title("Minimum convergence curves in Rosenbrock function (b=1.0)")
+            is_trajectory_min = True
+            is_markers = True
+            b = '100.0'
+            # n_traj = 100
+            plot_average_loss(f"AdaBound_{b}_optimtrack",    ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(0/22.0), name="AdaBound")
+            plot_average_loss(f"Adagrad_{b}_optimtrack",     ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(1/22.0), name="Adagrad")
+            plot_average_loss(f"Adam_{b}_optimtrack",        ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(2/22.0), name="Adam")
+            plot_average_loss(f"Adamax_{b}_optimtrack",      ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(3/22.0), name="Adamax")
+            plot_average_loss(f"AdaMod_{b}_optimtrack",      ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(4/22.0), name="AdaMod")
+            plot_average_loss(f"AdamP_{b}_optimtrack",       ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(5/22.0), name="AdamP")
+            plot_average_loss(f"AdamW_{b}_optimtrack",       ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(6/22.0), name="AdamW")
+            plot_average_loss(f"AggMo_{b}_optimtrack",       ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(7/22.0), name="AggMo")
+            plot_average_loss(f"AMSgrad_{b}_optimtrack",     ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(8/22.0), name="AMSgrad")
+            plot_average_loss(f"DiffGrad_{b}_optimtrack",    ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(9/22.0), name="DiffGrad")
+            plot_average_loss(f"Lamb_{b}_optimtrack",        ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(10/22.0), name="Lamb")
+            plot_average_loss(f"MADGRAD_{b}_optimtrack",     ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(11/22.0), name="MADGRAD")
+            plot_average_loss(f"NAdam_{b}_optimtrack",       ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(12/22.0), name="NAdam")
+            plot_average_loss(f"NovoGrad_{b}_optimtrack",    ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(13/22.0), name="NovoGrad")
+            plot_average_loss(f"PID_{b}_optimtrack",         ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(14/22.0), name="PID")
+            plot_average_loss(f"QHAdam_{b}_optimtrack",      ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(15/22.0), name="QHAdam")
+            plot_average_loss(f"RAdam_{b}_optimtrack",       ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(16/22.0), name="RAdam")
+            plot_average_loss(f"RMSprop_{b}_optimtrack",     ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(17/22.0), name="RMSprop")
+            plot_average_loss(f"Rprop_{b}_optimtrack",       ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(18/22.0), name="Rprop")
+            plot_average_loss(f"SGD_{b}_optimtrack",         ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(19/22.0), name="SGD")
+            plot_average_loss(f"SGDW_{b}_optimtrack",        ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(20/22.0), name="SGDW")
+            plot_average_loss(f"SWATS_{b}_optimtrack",       ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(21/22.0), name="SWATS")
+            plot_average_loss(f"Yogi_{b}_optimtrack",        ax, min_trajectory=is_trajectory_min, markers=is_markers, color=cm.viridis(22/22.0), name="Yogi")
+
+            plt.title("Minimum convergence curves in Rosenbrock function (b={b})".format(b=b))
             plt.tight_layout(pad=0.1)
             plt.legend(ncol=3, loc='upper right')
             plt.grid(True)
-            plt.savefig("img/Smart_plot_32.pdf")
-            plt.close()
-
-    if False:
-            fig, ax = plt.subplots(1, 1, figsize=(6, 6))
-            # n_traj = 100
-            plot_average_loss("AdaBound_1.0_optimtrack",    ax, color=cm.viridis(0/22.0), name="AdaBound")
-            plot_average_loss("Adagrad_1.0_optimtrack",     ax, color=cm.viridis(1/22.0), name="Adagrad")
-            plot_average_loss("Adam_1.0_optimtrack",        ax, color=cm.viridis(2/22.0), name="Adam")
-            plot_average_loss("Adamax_1.0_optimtrack",      ax, color=cm.viridis(3/22.0), name="Adamax")
-            plot_average_loss("AdaMod_1.0_optimtrack",      ax, color=cm.viridis(4/22.0), name="AdaMod")
-            plot_average_loss("AdamP_1.0_optimtrack",       ax, color=cm.viridis(5/22.0), name="AdamP")
-            plot_average_loss("AdamW_1.0_optimtrack",       ax, color=cm.viridis(6/22.0), name="AdamW")
-            plot_average_loss("AggMo_1.0_optimtrack",       ax, color=cm.viridis(7/22.0), name="AggMo")
-            plot_average_loss("AMSgrad_1.0_optimtrack",     ax, color=cm.viridis(8/22.0), name="AMSgrad")
-            plot_average_loss("DiffGrad_1.0_optimtrack",    ax, color=cm.viridis(9/22.0), name="DiffGrad")
-            plot_average_loss("Lamb_1.0_optimtrack",        ax, color=cm.viridis(10/22.0), name="Lamb")
-            plot_average_loss("MADGRAD_1.0_optimtrack",     ax, color=cm.viridis(11/22.0), name="MADGRAD")
-            plot_average_loss("NAdam_1.0_optimtrack",       ax, color=cm.viridis(12/22.0), name="NAdam")
-            plot_average_loss("NovoGrad_1.0_optimtrack",    ax, color=cm.viridis(13/22.0), name="NovoGrad")
-            plot_average_loss("PID_1.0_optimtrack",         ax, color=cm.viridis(14/22.0), name="PID")
-            plot_average_loss("QHAdam_1.0_optimtrack",      ax, color=cm.viridis(15/22.0), name="QHAdam")
-            plot_average_loss("RAdam_1.0_optimtrack",       ax, color=cm.viridis(16/22.0), name="RAdam")
-            plot_average_loss("RMSprop_1.0_optimtrack",     ax, color=cm.viridis(17/22.0), name="RMSprop")
-            plot_average_loss("Rprop_1.0_optimtrack",       ax, color=cm.viridis(18/22.0), name="Rprop")
-            plot_average_loss("SGD_1.0_optimtrack",         ax, color=cm.viridis(19/22.0), name="SGD")
-            plot_average_loss("SGDW_1.0_optimtrack",        ax, color=cm.viridis(20/22.0), name="SGDW")
-            plot_average_loss("SWATS_1.0_optimtrack",       ax, color=cm.viridis(21/22.0), name="SWATS")
-            plot_average_loss("Yogi_1.0_optimtrack",        ax, color=cm.viridis(22/22.0), name="Yogi")
-
-            plt.title("Convergence curves in Rosenbrock function (b=1.0)")
-            plt.tight_layout(pad=0.1)
-            plt.legend(ncol=3, loc='upper right')
-            plt.grid(True)
-            plt.savefig("img/Smart_plot_31.pdf")
+            plt.savefig("img/Smart_plot_33.pdf")
             plt.close()
